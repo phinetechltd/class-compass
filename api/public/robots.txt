@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /api/
+Disallow: /install
+Disallow: /payment/
+
+# Replace with your domain when you deploy:
+# Sitemap: https://classcompass.co.ke/sitemap.xml

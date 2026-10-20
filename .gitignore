@@ -1,0 +1,31 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.jks
+*.keystore
+key.properties
+api/storage/*.key
+
+# Build output and dependencies
+api/vendor/
+api/node_modules/
+web-app/build/
+web-app/.dart_tool/
+dist/
+*.apk
+*.aab
+
+# Local dev server state
+dev-server/logs/
+dev-server/php/
+api/storage/logs/*
+api/storage/framework/cache/data/*
+api/storage/framework/sessions/*
+api/storage/framework/views/*
+api/bootstrap/cache/*.php
+
+# Vendor update patch (applied already)
+api-update-patch/

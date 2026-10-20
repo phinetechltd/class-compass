@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:class_compass/common/layout/custom_dialog_widget.dart';
+import 'package:class_compass/common/layout/list_layout_widget.dart';
+import 'package:class_compass/feature/academic_configuration/class/presentation/widgets/select_class_widget.dart';
+import 'package:class_compass/feature/academic_configuration/section/controller/section_controller.dart';
+import 'package:class_compass/feature/academic_configuration/section/domain/model/section_model.dart';
+import 'package:class_compass/feature/academic_configuration/section/presentation/widgets/create_new_section_widget_web.dart';
+import 'package:class_compass/feature/academic_configuration/section/presentation/widgets/section_item_widget.dart';
+
+class SectionListWidget extends StatelessWidget {
+  final ScrollController scrollController;
+  const SectionListWidget({super.key, required this.scrollController});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<SectionController>(
+      builder: (sectionController) {
+        final sectionModel = sectionController.sectionModel;
+        final sectionData = sectionModel?.data;
+
+        return GenericListSection<SectionItem>(
+          sectionTitle: "academic_configuration".tr,
+          pathItems: ["section_list".tr],
+          addNewTitle: "add_new_section".tr,
+          widget: const SizedBox(width: 200, child: SelectClassWidget(title: "empty",)),
+          onAddNewTap: () => Get.dialog( CustomDialogWidget(title: "section".tr,
+              child: const CreateNewSectionWidgetForWeb())),
+          headings: const ["section", "class", "group"],
+          scrollController: scrollController,
+          isLoading: false,
+          totalSize: sectionData?.total ?? 0,
+          offset: sectionData?.currentPage ?? 0,
+          onPaginate: (offset) async => await sectionController.getSectionList(offset ?? 1),
+          items: sectionData?.data ?? [],
+          itemBuilder: (item, index) => SectionItemWidget(index: index, sectionItem: item),
+        );
+      },
+    );
+  }
+}

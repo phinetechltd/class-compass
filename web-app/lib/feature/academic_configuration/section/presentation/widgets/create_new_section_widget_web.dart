@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:class_compass/common/widget/custom_button.dart';
+import 'package:class_compass/common/widget/custom_snackbar.dart';
+import 'package:class_compass/common/widget/custom_text_field.dart';
+import 'package:class_compass/feature/academic_configuration/class/controller/class_controller.dart';
+import 'package:class_compass/feature/academic_configuration/class/presentation/widgets/select_class_widget.dart';
+import 'package:class_compass/feature/academic_configuration/group/controller/group_controller.dart';
+import 'package:class_compass/feature/academic_configuration/group/presentation/widgets/select_group_widget.dart';
+import 'package:class_compass/feature/academic_configuration/section/controller/section_controller.dart';
+import 'package:class_compass/feature/academic_configuration/section/domain/model/section_body.dart';
+import 'package:class_compass/feature/academic_configuration/section/domain/model/section_model.dart';
+import 'package:class_compass/feature/staff_information/teacher/controller/teacher_controller.dart';
+import 'package:class_compass/util/dimensions.dart';
+
+class CreateNewSectionWidgetForWeb extends StatefulWidget {
+  final SectionItem? sectionItem;
+  const CreateNewSectionWidgetForWeb({super.key, this.sectionItem});
+
+  @override
+  State<CreateNewSectionWidgetForWeb> createState() => _CreateNewSectionWidgetForWebState();
+}
+
+class _CreateNewSectionWidgetForWebState extends State<CreateNewSectionWidgetForWeb> {
+  TextEditingController nameController = TextEditingController();
+  bool update = false;
+  @override
+  void initState() {
+    if(widget.sectionItem != null){
+      update = true;
+      nameController.text = widget.sectionItem?.sectionName??'';
+    }
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder<SectionController>(builder: (sectionController) {
+      return Padding(padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+        child: Column(mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end, children: [
+
+              const Row(spacing: Dimensions.paddingSizeSmall, children: [
+                  Expanded(child: SelectClassWidget()),
+                  Expanded(child: SelectGroupWidget()),
+
+                ],
+              ),
+
+
+              Row(crossAxisAlignment: CrossAxisAlignment.end, spacing: Dimensions.paddingSizeSmall, children: [
+                  Expanded(
+                    child: CustomTextField(title: "name".tr,
+                      controller: nameController,
+                      hintText: "enter_name".tr,),
+                  ),
+
+
+
+
+              sectionController.isLoading? const Padding(padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
+                  child: Center(child: CircularProgressIndicator())):
+
+              SizedBox(width: 120,
+                child: CustomButton(onTap: (){
+                  String name = nameController.text.trim();
+                  int? classId = Get.find<ClassController>().selectedClassItem?.id;
+                  int? groupId = Get.find<GroupController>().groupItem?.id;
+                  int? teacherId = Get.find<TeacherController>().selectedTeacherItem?.id;
+                  if(name.isEmpty){
+                    showCustomSnackBar("name_is_empty".tr);
+                  }
+                  else if(classId == null){
+                    showCustomSnackBar("select_class".tr);
+                  }
+                  else if(groupId == null){
+                    showCustomSnackBar("select_group".tr);
+                  }
+
+                  else{
+
+                    SectionBody sectionBody = SectionBody(
+                        sectionName: name,
+                        classId: classId.toString(),
+                        studentGroup: groupId.toString(),
+                        classTeacher: teacherId.toString(),
+                        method: update? "PUT":"POST");
+
+                    if(update){
+                      sectionController.updateSection(sectionBody, widget.sectionItem!.id!);
+                    }else{
+                      sectionController.addNewSection(sectionBody);
+                    }
+
+                      }
+                    }, text: "confirm".tr, height: 40,),
+                  )
+                ],
+              ),
+
+            ],),
+          );
+        }
+    );
+  }
+}

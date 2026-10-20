@@ -1,0 +1,35 @@
+{
+    "name": "Class Compass",
+    "short_name": "Class Compass",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#043268",
+    "theme_color": "#016DF6",
+    "description": "Class Compass - complete school management system for attendance, fees, exams, students, teachers and academic records.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
