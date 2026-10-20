@@ -35,7 +35,7 @@ class AttendanceSummaryReportWidgetState extends State<AttendanceSummaryReportWi
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text("attendance_summary".tr, style: textBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
                     const SizedBox(height: 4),
-                    Text("More than 400 new members", style: textRegular.copyWith(color: Colors.grey))]),
+                    Text("Present and absent learners on the daily register", style: textRegular.copyWith(color: Colors.grey))]),
 
                 SizedBox(width: 150, child: Padding(padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: CustomDropdown(width: Get.width, title: "select".tr,

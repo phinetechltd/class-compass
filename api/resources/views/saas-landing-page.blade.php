@@ -3,6 +3,8 @@
     $frontend = rtrim((string) config('app.frontend_url'), '/');
     $contact = config('app.contact', []);
     $asset = fn ($p) => asset('assets/classcompass/'.$p);
+    $screen = fn ($p) => asset('assets/classcompass/screens/'.$p);
+    $demo = rtrim((string) config('app.demo_url'), '/');
     // Prices in KES per term (3 terms a year). Keep in sync with the `plans` table.
     $plans = [
         ['key' => 'msingi', 'name' => 'Msingi', 'tag' => 'Small schools getting started', 'price' => 2500, 'learners' => 'Up to 200 learners', 'max' => 200,
@@ -113,6 +115,32 @@
         .pill-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
         .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--navy)}
         @media (max-width:960px){.hero .wrap{grid-template-columns:1fr}}
+        /* real screenshots */
+        .shots{position:relative;padding:0 6% 50px 0}
+        .browser{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 40px 80px rgba(4,50,104,.25);border:1px solid var(--line)}
+        .browser .bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#eef3fa;border-bottom:1px solid var(--line)}
+        .browser .bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.browser .bar i:nth-child(2){background:#febc2e}.browser .bar i:nth-child(3){background:#28c840}
+        .browser .bar span{margin-left:10px;font-size:12px;color:var(--muted);background:#fff;border-radius:6px;padding:3px 10px}
+        .browser img{display:block;width:100%;height:auto}
+        .phone{position:absolute;right:0;bottom:0;width:23%;min-width:120px;border-radius:30px;padding:8px;background:#0b1a33;box-shadow:0 30px 60px rgba(4,50,104,.35);animation:float 7s ease-in-out infinite}
+        .phone img{display:block;width:100%;border-radius:23px}
+        .shot-note{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--muted)}
+        @media (max-width:560px){.phone{right:0;width:38%}}
+        .tour-tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:36px 0 24px}
+        .tour-tabs button{border:1px solid var(--line);background:#fff;color:var(--navy);font:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;cursor:pointer}
+        .tour-tabs button[aria-selected=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+        .tour-panel{display:none}.tour-panel.on{display:grid;grid-template-columns:1.6fr 1fr;gap:36px;align-items:center}
+        .tour-panel.mobile.on{grid-template-columns:1fr 1.1fr}
+        @media (max-width:960px){.tour-panel.on,.tour-panel.mobile.on{grid-template-columns:1fr}}
+        .tour-panel .phones{display:flex;gap:16px;justify-content:center}
+        .tour-panel .phones img{width:100%;max-width:250px;border-radius:26px;border:8px solid #0b1a33;box-shadow:0 30px 60px rgba(4,50,104,.22)}
+        .tour-panel .phones picture{width:46%;max-width:250px}
+        .tour-panel h3{font-size:24px;margin-bottom:10px}
+        .demo-box{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+        @media (max-width:960px){.demo-box{grid-template-columns:1fr 1fr}}@media (max-width:520px){.demo-box{grid-template-columns:1fr}}
+        .demo-role{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+        .demo-role b{display:block;color:var(--navy);font-size:17px;margin-bottom:4px}.demo-role p{margin:0 0 10px;font-size:14px}
+        .demo-role code{font-size:12.5px;background:var(--bg);padding:3px 7px;border-radius:6px;color:var(--navy);word-break:break-all}
         /* dashboard mock */
         .mock{position:relative;background:linear-gradient(160deg,#0b2a5c,#06204a);border-radius:24px;padding:18px;box-shadow:0 40px 80px rgba(4,50,104,.28);color:#d9e6fb;animation:float 7s ease-in-out infinite}
         .mock-top{display:flex;align-items:center;gap:8px;margin-bottom:14px}.mock-top i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.mock-top i:nth-child(2){background:#febc2e}.mock-top i:nth-child(3){background:#28c840}
@@ -151,6 +179,7 @@
         .split.rev .media{order:-1}
         @media (max-width:960px){.split{grid-template-columns:1fr}.split.rev .media{order:0}}
         .media img{border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:560px;margin-inline:auto}
+        .media img.plain{border-radius:0;box-shadow:none;max-width:520px}
         .ticks{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px}
         .ticks li{display:flex;gap:12px;align-items:flex-start}.ticks .ic{color:var(--green);margin-top:2px}
         .curricula{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
@@ -226,6 +255,7 @@
     <div class="wrap">
         <a href="{{ url('/') }}" aria-label="{{ $app }} home"><img src="{{ $asset('logo.png') }}" alt="{{ $app }}" width="160" height="43"></a>
         <nav class="nav-links" aria-label="Main">
+            <a href="#demo">Live demo</a>
             <a href="#features">Features</a>
             <a href="#curriculum">CBC & curricula</a>
             <a href="#mpesa">M-Pesa fees</a>
@@ -249,7 +279,7 @@
                 <p class="lead">CBC assessments and report cards, fees collected straight to your Paybill with M-Pesa, attendance alerts and parent SMS — set up in minutes, not weeks.</p>
                 <div class="hero-ctas">
                     <a class="btn btn-primary" href="#get-started">Start 30-day free trial <svg class="ic"><use href="#i-arrow-right"/></svg></a>
-                    <a class="btn btn-ghost" href="#pricing">See pricing</a>
+                    <a class="btn btn-ghost" href="#demo">Try the live demo</a>
                 </div>
                 <div class="reassure">
                     <span><svg class="ic"><use href="#i-check"/></svg>No card needed</span>
@@ -260,28 +290,13 @@
                     <span class="pill">CBC · KNEC rubric</span><span class="pill">8-4-4</span><span class="pill">British / IGCSE</span><span class="pill">College / TVET</span>
                 </div>
             </div>
-            <div class="reveal" aria-hidden="true">
-                <div class="mock">
-                    <div class="grade"><b>EE1</b>Grade 7 · Mathematics</div>
-                    <div class="mock-top"><i></i><i></i><i></i><span>app.classcompass · Dashboard</span></div>
-                    <div class="mock-grid">
-                        <div class="kpi"><small>Learners</small><b>642</b><em>+18 this term</em></div>
-                        <div class="kpi"><small>Attendance today</small><b>96.4%</b><em>+1.2%</em></div>
-                        <div class="kpi"><small>Fees collected</small><b>KSh 1.24M</b><em>Term 3</em></div>
-                    </div>
-                    <div class="mock-row">
-                        <div class="panel"><h4>Fee collection by week</h4>
-                            <div class="bars"><i style="height:38%;animation-delay:.05s"></i><i style="height:52%;animation-delay:.1s"></i><i style="height:47%;animation-delay:.15s"></i><i style="height:70%;animation-delay:.2s"></i><i style="height:64%;animation-delay:.25s"></i><i style="height:86%;animation-delay:.3s"></i><i style="height:92%;animation-delay:.35s"></i></div>
-                        </div>
-                        <div class="panel feed"><h4>M-Pesa payments</h4>
-                            <div><span><b>W. Kamau</b> · Gr 7</span><span class="ok">15,000</span></div>
-                            <div><span><b>B. Otieno</b> · Gr 4</span><span class="ok">8,500</span></div>
-                            <div><span><b>F. Wanjiru</b> · PP2</span><span class="ok">6,000</span></div>
-                            <div><span><b>A. Mutua</b> · Gr 9</span><span class="ok">12,250</span></div>
-                        </div>
-                    </div>
-                    <div class="toast"><span class="dot">M</span><div><b>Payment received</b><small>TJK8ABC123 · KSh 15,000 posted</small></div></div>
+            <div class="reveal">
+                <div class="shots">
+                    <div class="browser"><div class="bar"><i></i><i></i><i></i><span>demo.classcompass.co.ke · Dashboard</span></div>
+                        <picture><source srcset="{{ $screen('admin-dashboard.webp') }}" type="image/webp"><img src="{{ $screen('admin-dashboard.jpg') }}" alt="Class Compass school dashboard with learners, teachers, attendance and fees collected" width="1440" height="900"></picture></div>
+                    <div class="phone"><picture><source srcset="{{ $screen('parent-mpesa-paid.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-paid.jpg') }}" alt="Parent paying school fees with M-Pesa in the parent portal" width="390" height="844" loading="lazy"></picture></div>
                 </div>
+                <div class="shot-note"><svg class="ic" style="width:16px;height:16px"><use href="#i-badge-check"/></svg>Real screens from the live demo school.</div>
             </div>
         </div>
     </section>
@@ -295,6 +310,60 @@
             <span><svg class="ic"><use href="#i-shield-check"/></svg>Role-based access</span>
         </div>
     </div>
+
+    <section id="demo">
+        <div class="wrap">
+            <div class="reveal" style="text-align:center;max-width:760px;margin:0 auto">
+                <span class="eyebrow">See the real system</span>
+                <h2 style="margin-top:10px">Try Class Compass before you sign up</h2>
+                <p class="lead" style="margin-top:14px">Compass Academy is a live demo school with 198 learners, 12 teachers, six weeks of attendance and real fee records. Log in as any role, click around and even pay fees by M-Pesa — in the demo, no money moves.</p>
+            </div>
+            <div class="tour-tabs" role="tablist" aria-label="Screens">
+                <button type="button" role="tab" aria-selected="true" data-tab="t-dash">Dashboard</button>
+                <button type="button" role="tab" aria-selected="false" data-tab="t-learners">Learners</button>
+                <button type="button" role="tab" aria-selected="false" data-tab="t-fees">Fee collection</button>
+                <button type="button" role="tab" aria-selected="false" data-tab="t-attendance">Attendance</button>
+                <button type="button" role="tab" aria-selected="false" data-tab="t-mpesa">M-Pesa payments</button>
+                <button type="button" role="tab" aria-selected="false" data-tab="t-parent">Parent app</button>
+            </div>
+            @php
+                $tour = [
+                    ['t-dash', 'admin-dashboard', 'School dashboard', 'Learners, teachers, today\'s attendance and fees collected this month — at a glance for the head teacher and the bursar.'],
+                    ['t-learners', 'admin-learners', 'Learner records', 'Every learner\'s admission number, class, parents and contacts. Admit a learner in under a minute and promote whole classes at the end of the year.'],
+                    ['t-fees', 'admin-fees', 'Fee collection', 'Termly fee structures per class, balances per learner and every receipt — from M-Pesa, Paystack or the bursar\'s desk.'],
+                    ['t-attendance', 'admin-attendance', 'Attendance', 'Mark the daily register in seconds on a phone or computer; parents see it in their portal.'],
+                ];
+            @endphp
+            @foreach ($tour as $i => [$id, $img, $title, $text])
+                <div class="tour-panel {{ $i === 0 ? 'on' : '' }}" id="{{ $id }}" role="tabpanel">
+                    <div class="browser"><div class="bar"><i></i><i></i><i></i><span>demo.classcompass.co.ke</span></div>
+                        <picture><source srcset="{{ $screen($img.'.webp') }}" type="image/webp"><img src="{{ $screen($img.'.jpg') }}" alt="{{ $title }} in Class Compass" loading="lazy" width="1440" height="900"></picture></div>
+                    <div><h3>{{ $title }}</h3><p>{{ $text }}</p><a class="btn btn-primary" href="{{ $demo }}/sign-in" style="margin-top:12px">Open the live demo <svg class="ic"><use href="#i-arrow-right"/></svg></a></div>
+                </div>
+            @endforeach
+            <div class="tour-panel mobile" id="t-mpesa" role="tabpanel">
+                <div class="phones">
+                    <picture><source srcset="{{ $screen('parent-mpesa-pay.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-pay.jpg') }}" alt="Pay school fees screen with M-Pesa" loading="lazy" width="390" height="844"></picture>
+                    <picture><source srcset="{{ $screen('parent-mpesa-paid.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-paid.jpg') }}" alt="M-Pesa payment confirmed with receipt" loading="lazy" width="390" height="844"></picture>
+                </div>
+                <div><h3>M-Pesa STK push</h3><p>The parent enters the amount and their Safaricom number, approves the prompt with their PIN, and the receipt posts to the learner's fee statement and the school's accounts at once.</p><a class="btn btn-primary" href="{{ $demo }}/sign-in" style="margin-top:12px">Try paying as a parent <svg class="ic"><use href="#i-arrow-right"/></svg></a></div>
+            </div>
+            <div class="tour-panel mobile" id="t-parent" role="tabpanel">
+                <div class="phones">
+                    <picture><source srcset="{{ $screen('parent-dashboard.webp') }}" type="image/webp"><img src="{{ $screen('parent-dashboard.jpg') }}" alt="Parent portal dashboard with attendance" loading="lazy" width="390" height="844"></picture>
+                    <picture><source srcset="{{ $screen('parent-fees.webp') }}" type="image/webp"><img src="{{ $screen('parent-fees.jpg') }}" alt="Parent portal fee statement" loading="lazy" width="390" height="844"></picture>
+                </div>
+                <div><h3>Parent &amp; learner app</h3><p>Attendance, report cards, homework, notices and fee balances on any phone — in the browser or the Android app.</p><a class="btn btn-primary" href="{{ $demo }}/sign-in" style="margin-top:12px">Log in as a parent <svg class="ic"><use href="#i-arrow-right"/></svg></a></div>
+            </div>
+
+            <div class="demo-box">
+                @foreach ([['School admin', 'Runs the whole school: learners, staff, fees, exams and the website.', 'admin@demo.classcompass.co.ke'], ['Bursar', 'Fee collection, M-Pesa payments, invoices and accounts.', 'bursar@demo.classcompass.co.ke'], ['Parent', 'Wanjiku\'s parent: attendance, report cards and paying fees.', 'parent@demo.classcompass.co.ke'], ['Learner', 'Wanjiku Kamau, Grade 7: timetable, homework and results.', 'learner@demo.classcompass.co.ke']] as [$role, $what, $email])
+                    <div class="demo-role reveal"><b>{{ $role }}</b><p>{{ $what }}</p><code>{{ $email }}</code></div>
+                @endforeach
+            </div>
+            <p style="text-align:center;margin-top:22px">The demo password is shown on the <a href="{{ $demo }}/sign-in"><strong>demo sign-in page</strong></a>. Demo data resets every night.</p>
+        </div>
+    </section>
 
     <section id="features">
         <div class="wrap center">
@@ -346,7 +415,7 @@
                     <li><svg class="ic"><use href="#i-check"/></svg>Cards and mobile money through Paystack as well.</li>
                 </ul>
             </div>
-            <div class="media reveal"><picture><source srcset="{{ $asset('hero-mpesa.webp') }}" type="image/webp"><img src="{{ $asset('hero-mpesa.jpg') }}" alt="Parent paying school fees with an M-Pesa STK prompt" loading="lazy" width="845" height="760"></picture></div>
+            <div class="media reveal"><picture><source srcset="{{ $screen('mpesa-flow.webp') }}" type="image/webp"><img class="plain" src="{{ $screen('mpesa-flow.png') }}" alt="Real Class Compass screens: paying school fees with M-Pesa and the confirmed receipt" loading="lazy" width="950" height="896"></picture></div>
         </div>
     </section>
 
@@ -362,7 +431,7 @@
                     <li><svg class="ic"><use href="#i-check"/></svg>Works on low-cost Android phones and in any browser.</li>
                 </ul>
             </div>
-            <div class="media reveal"><picture><source srcset="{{ $asset('hero-parents.webp') }}" type="image/webp"><img src="{{ $asset('hero-parents.jpg') }}" alt="Parent portal with report cards, attendance and fees" loading="lazy" width="845" height="760"></picture></div>
+            <div class="media reveal"><picture><source srcset="{{ $screen('parent-flow.webp') }}" type="image/webp"><img class="plain" src="{{ $screen('parent-flow.png') }}" alt="Real Class Compass parent portal screens: dashboard and fee statement" loading="lazy" width="950" height="896"></picture></div>
         </div>
     </section>
 
@@ -539,6 +608,14 @@
     }
     range.addEventListener('input', recommend); recommend();
 
+    // Screen tour tabs
+    document.querySelectorAll('.tour-tabs button').forEach(function (b) {
+        b.addEventListener('click', function () {
+            document.querySelectorAll('.tour-tabs button').forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+            document.querySelectorAll('.tour-panel').forEach(function (p) { p.classList.toggle('on', p.id === b.dataset.tab); });
+        });
+    });
+
     // Free-trial sign-up -> /api/frontend/onboarding
     var form = document.getElementById('signup'), msg = document.getElementById('formMsg'), btn = document.getElementById('submitBtn');
     function show(text, ok) { msg.className = 'msg ' + (ok ? 'ok' : 'err'); msg.innerHTML = text; msg.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
@@ -553,7 +630,9 @@
             .then(function (res) {
                 if (res.ok) {
                     form.reset();
-                    show('<strong>Your school is ready!</strong> Your 30-day free trial has started. <a href="' + @json($frontend.'/sign-in') + '"><strong>Log in now</strong></a> with the email and password you just created.', true);
+                    var d = res.body.data || {}, login = d.login_url || @json($frontend.'/sign-in');
+                    show('<strong>Your school is ready!</strong> Your 30-day free trial has started. <a href="' + login + '"><strong>Log in now</strong></a> with the email and password you just created.'
+                        + (d.school_url ? '<br>Your school website: <a href="' + d.school_url + '">' + d.school_url.replace('https://', '') + '</a>' : ''), true);
                 } else {
                     var errs = res.body.errors && typeof res.body.errors === 'object' ? Object.values(res.body.errors).flat().join('<br>') : '';
                     show(errs || res.body.message || 'Something went wrong. Please try again.');

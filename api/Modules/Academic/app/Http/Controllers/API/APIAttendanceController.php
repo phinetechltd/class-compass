@@ -67,7 +67,7 @@ class APIAttendanceController extends Controller
             ->where('student_sessions.branch_id', get_branch_id())
             ->where('student_sessions.class_id', $request->class_id)
             ->where('student_sessions.section_id', $request->section_id)
-            ->orderBy('student_sessions.roll')
+            ->orderByRaw('CAST(student_sessions.roll AS UNSIGNED)')
             ->get();
 
         return $this->responseSuccess(

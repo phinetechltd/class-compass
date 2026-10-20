@@ -43,6 +43,7 @@ class StudentItem {
     phone = json['phone'];
     rollNo = json['roll_no'].toString();
     studentId = PriceConverter.parseInt(json['student_id']);
-    isPresent = false;
+    // Show the register as it was saved (1 = present); a new register starts unmarked.
+    isPresent = '${json['attendance']}' == '1';
   }
 }

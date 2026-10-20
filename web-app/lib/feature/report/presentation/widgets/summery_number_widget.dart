@@ -57,14 +57,7 @@ class CountingItemWidget extends StatelessWidget {
       horizontalPadding: 20,verticalPadding: 20,borderRadius: 10,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: Dimensions.paddingSizeExtraSmall, children: [
         const CustomImage(image : Images.group, width: 25, localAsset: true),
-        Row(spacing: Dimensions.paddingSizeExtraSmall, children: [
-            Text("${count.toString()}+", style: textSemiBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Colors.white)),
-            CustomContainer(color: Theme.of(context).cardColor.withValues(alpha: .25),
-            showShadow: false, verticalPadding: 3, horizontalPadding: 7, borderRadius: 2,
-            child: Row(spacing: Dimensions.paddingSizeExtraSmall, children: [
-              Text("28.4%", style: textRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Colors.white)),
-           const CustomImage(image:Images.arrowUp, width: 10, localAsset: true)
-            ]))]),
+        Text(count.toString(), style: textSemiBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Colors.white)),
 
         Text(title.tr, style: textRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white)),
     ]),);

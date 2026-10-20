@@ -15,9 +15,9 @@ class DemoAccounts
 
     /** Login emails for the demo roles, with the older emails they replace. */
     public const ROLES = [
-        'admin' => ['label' => 'School admin', 'description' => 'Runs the whole school: learners, staff, fees, exams and the website.',
+        'admin' => ['label' => 'School admin', 'name' => 'Grace Mwende', 'description' => 'Runs the whole school: learners, staff, fees, exams and the website.',
             'email' => 'admin@demo.classcompass.co.ke', 'old' => ['superadmin@gmail.com']],
-        'accountant' => ['label' => 'Bursar', 'description' => 'Fee collection, M-Pesa payments, invoices and accounts.',
+        'accountant' => ['label' => 'Bursar', 'name' => 'Joseph Kiptoo', 'description' => 'Fee collection, M-Pesa payments, invoices and accounts.',
             'email' => 'bursar@demo.classcompass.co.ke', 'old' => ['accountant@gmail.com']],
         'parent' => ['label' => 'Parent', 'description' => 'Wanjiku\'s parent: attendance, report cards and paying fees.',
             'email' => 'parent@demo.classcompass.co.ke', 'old' => ['parent@classcompass.test']],

@@ -55,10 +55,24 @@ class DashboardController extends Controller
         $totalStudents = Student::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->count();
         $totalMaleStudents = Student::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->where('gender', 'Male')->count();
         $totalFemaleStudents = Student::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->where('gender', 'Female')->count();
+        // Fee status per learner for the current term: what they paid vs. their class's termly fee.
+        $termFee = DB::table('student_sessions')
+            ->join('fees', fn ($j) => $j->on('fees.class_id', '=', 'student_sessions.class_id')->on('fees.institute_id', '=', 'student_sessions.institute_id'))
+            ->where('student_sessions.institute_id', get_institute_id())->where('student_sessions.branch_id', get_branch_id())
+            ->groupBy('student_sessions.student_id')
+            ->select('student_sessions.student_id', DB::raw('SUM(fees.fee_amount) as fee'));
+        $feeStatus = DB::table('students')->whereNull('students.deleted_at')
+            ->where('students.institute_id', get_institute_id())->where('students.branch_id', get_branch_id())
+            ->leftJoinSub($termFee, 'tf', 'tf.student_id', '=', 'students.id')
+            ->leftJoinSub(DB::table('student_collections')->groupBy('student_id')
+                ->select('student_id', DB::raw('SUM(total_paid) as paid')), 'sc', 'sc.student_id', '=', 'students.id')
+            ->selectRaw('SUM(COALESCE(sc.paid,0) <= 0) as unpaid, SUM(COALESCE(sc.paid,0) > 0 AND COALESCE(sc.paid,0) < COALESCE(tf.fee,0)) as partial, SUM(COALESCE(sc.paid,0) > 0 AND COALESCE(sc.paid,0) >= COALESCE(tf.fee,0)) as paid')
+            ->first();
+
         $data = [
             'fees_awaiting_payment' => [
-                'total' => 59,
-                'waiting' => 8,
+                'total' => $totalStudents,
+                'waiting' => (int) ($feeStatus->unpaid ?? 0) + (int) ($feeStatus->partial ?? 0),
             ],
 
             'converted_leads' => [
@@ -77,9 +91,9 @@ class DashboardController extends Controller
             ],
 
             'fees_overview' => [
-                'unpaid' => 41,
-                'partial' => 10,
-                'paid' => 8,
+                'unpaid' => (int) ($feeStatus->unpaid ?? 0),
+                'partial' => (int) ($feeStatus->partial ?? 0),
+                'paid' => (int) ($feeStatus->paid ?? 0),
             ],
 
             'enquiry_overview' => [
@@ -129,8 +143,8 @@ class DashboardController extends Controller
             'monthly_income' => $totals->total_income ?? 0,
             'monthly_expense' => $totals->total_expense ?? 0,
 
-            'admins' => User::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->where('user_type', 'System Admin')->count(),
-            'staffs' => User::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->where('user_type', 'Staff')->count(),
+            'admins' => User::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->whereIn('user_type', ['Super Admin', 'System Admin'])->count(),
+            'staffs' => User::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->whereIn('user_type', ['Staff', 'Accountant', 'Librarian', 'Hostel', 'Transport'])->count(),
             'teachers' => User::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->where('user_type', 'Teacher')->count(),
             'students' => User::where('institute_id', get_institute_id())->where('branch_id', get_branch_id())->where('user_type', 'Student')->count(),
         ];

@@ -6,6 +6,7 @@ import 'package:class_compass/feature/authentication/logic/authentication_contro
 import 'package:class_compass/feature/cms_management/cms_settings/controller/frontend_settings_controller.dart';
 import 'package:class_compass/feature/landing_page/logic/landing_page_controller.dart';
 import 'package:class_compass/feature/landing_page/presentation/policy_enum.dart';
+import 'package:class_compass/helper/domain_helper.dart';
 import 'package:class_compass/helper/route_helper.dart';
 import 'package:class_compass/util/app_constants.dart';
 import 'package:class_compass/util/images.dart';
@@ -77,6 +78,11 @@ class _SchoolHomePageState extends State<SchoolHomePage> {
   @override
   void initState() {
     super.initState();
+    // The shared login address has no school website: go straight to sign-in.
+    if (DomainHelper.isPortalHost) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => Get.offAllNamed(_loggedIn ? RouteHelper.getDashboardRoute() : RouteHelper.getSignInRoute()));
+      return;
+    }
     final c = Get.find<LandingPageController>();
     c.getBannerData();
     c.getAboutData();

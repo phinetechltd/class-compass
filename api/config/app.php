@@ -56,9 +56,15 @@ return [
     // Public URL of the Class Compass web app (Flutter build), used by the landing page.
     'frontend_url' => env('FRONTEND_URL', 'http://127.0.0.1:5000'),
 
+    // New schools get "<name>.<suffix>" as their website address (e.g. classcompass.co.ke).
+    'school_domain_suffix' => env('SCHOOL_DOMAIN_SUFFIX'),
+
+    // Public demo school, linked from the product website.
+    'demo_url' => env('DEMO_URL', 'https://demo.classcompass.co.ke'),
+
     // Public contact details shown on the marketing site (hidden when empty).
     'contact' => [
-        'email' => env('CONTACT_EMAIL'),
+        'email' => env('CONTACT_EMAIL', 'phinetechltd@gmail.com'),
         'phone' => env('CONTACT_PHONE'),
         'whatsapp' => env('CONTACT_WHATSAPP'),
     ],

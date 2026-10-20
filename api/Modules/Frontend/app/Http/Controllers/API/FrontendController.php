@@ -816,7 +816,7 @@ class FrontendController extends Controller
                 'institute_name' => $validated['institute_name'],
                 'institute_email' => $validated['institute_email'],
                 'institute_phone' => $validated['institute_phone'],
-                'institute_domain' => $validated['institute_domain'] ?? null,
+                'institute_domain' => ($validated['institute_domain'] ?? null) ?: $this->schoolSubdomain($validated['institute_name']),
                 'institute_type' => $validated['institute_type'] ?? null,
                 'user_name' => $validated['user_name'],
                 'user_email' => $validated['user_email'],
@@ -988,9 +988,32 @@ class FrontendController extends Controller
             [
                 'user' => $user,
                 'access_token' => $accessToken,
+                'school_url' => $institute->domain ? 'https://'.$institute->domain : null,
+                'login_url' => rtrim((string) config('app.frontend_url'), '/').'/sign-in',
             ],
             'Onboarding request submitted successfully.'
         );
+    }
+
+    /**
+     * Each new school gets its own website address, e.g. "st-marys.classcompass.co.ke".
+     * Empty when SCHOOL_DOMAIN_SUFFIX is not set (the school adds its own domain later).
+     */
+    private function schoolSubdomain(string $name): ?string
+    {
+        $suffix = trim((string) config('app.school_domain_suffix'), '.');
+        if ($suffix === '') {
+            return null;
+        }
+        $base = \Illuminate\Support\Str::of($name)->lower()->replaceMatches('/\b(the|school|academy|college|high|primary|secondary|and)\b/', ' ')->slug()->limit(30, '')->trim('-')->value();
+        $base = $base !== '' ? $base : \Illuminate\Support\Str::slug($name);
+        $base = in_array($base, ['www', 'app', 'api', 'demo', 'admin', 'mail', 'support'], true) || $base === '' ? 'school-'.$base : $base;
+        $domain = "{$base}.{$suffix}";
+        for ($i = 2; Institute::where('domain', $domain)->exists(); $i++) {
+            $domain = "{$base}-{$i}.{$suffix}";
+        }
+
+        return $domain;
     }
 
     public function defaultTheme(Request $request)

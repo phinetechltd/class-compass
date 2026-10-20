@@ -68,7 +68,7 @@ class DemoAccountsCommand extends Command
             }
             DB::table('users')->where('id', $user->id)->update([
                 'email' => $role['email'], 'password' => $hash, 'status' => 1, 'updated_at' => now(),
-            ]);
+            ] + (isset($role['name']) ? ['name' => $role['name']] : []));
             $accounts[] = ['key' => $key, 'label' => $role['label'], 'description' => $role['description'], 'email' => $role['email'], 'user_id' => $user->id];
         }
         // Signed-in demo sessions keep working; a changed password from the day is undone.

@@ -76,7 +76,8 @@ class OnlineFeePaymentController extends Controller
 
         $method = $request->input('method');
         $setting = $this->gatewaySetting($method);
-        if (! $setting || $setting->status != '1') {
+        $simulate = $method === 'mpesa' && $this->simulatesMpesa($setting);
+        if (! $simulate && (! $setting || $setting->status != '1')) {
             return $this->responseError([], _lang('This payment method is not enabled by the school.'), 422);
         }
 
@@ -99,6 +100,10 @@ class OnlineFeePaymentController extends Controller
                 'fee_heads' => $feeHeads,
             ]),
         ]);
+
+        if ($simulate) {
+            return $this->startSimulatedMpesa($payment, (string) $request->phone);
+        }
 
         try {
             return $method === 'mpesa'
@@ -123,6 +128,14 @@ class OnlineFeePaymentController extends Controller
         }
 
         $data = $this->service->additionalData($payment);
+
+        // Demo school: the simulated M-Pesa payment "arrives" a few seconds after the prompt.
+        if (! $payment->is_paid && ! empty($data['simulated']) && ($data['status'] ?? '') === 'pending'
+            && $payment->created_at->diffInSeconds(now()) >= 6) {
+            $this->service->confirm($payment->id, (float) $payment->payment_amount, 'DEMO'.strtoupper(Str::random(6)), ['simulated' => true]);
+            $payment->refresh();
+            $data = $this->service->additionalData($payment);
+        }
 
         // M-Pesa callbacks can be slow or blocked by firewalls: ask Safaricom directly.
         if (! $payment->is_paid && $payment->payment_method === 'mpesa' && ($data['status'] ?? '') === 'pending'
@@ -290,6 +303,37 @@ class OnlineFeePaymentController extends Controller
         ], _lang('Payment prompt sent to your phone.'));
     }
 
+    /**
+     * The public demo school takes "payments" without Safaricom keys so visitors can try the
+     * whole flow: no prompt is sent and no money moves. Real schools always need their own keys.
+     */
+    private function simulatesMpesa(?Setting $setting): bool
+    {
+        $demoInstitute = \App\Support\DemoAccounts::data()['institute'] ?? null;
+        if (! \App\Support\DemoAccounts::enabled() || (int) Auth::user()?->institute_id !== (int) $demoInstitute) {
+            return false;
+        }
+
+        return ! ($setting && $setting->status == '1' && MpesaDarajaService::fromPaymentInfo($setting->payment_info, $setting->mode)->isConfigured());
+    }
+
+    private function startSimulatedMpesa(PaymentRequest $payment, string $phone): JsonResponse
+    {
+        $msisdn = MpesaDarajaService::normalizePhone($phone);
+        if (! $msisdn) {
+            $this->service->fail($payment, 'Invalid phone number');
+
+            return $this->responseError([], _lang('Enter a valid Safaricom number, e.g. 0712 345 678.'), 422);
+        }
+        $this->service->saveAdditionalData($payment, ['simulated' => true, 'phone' => $msisdn]);
+
+        return $this->responseSuccess([
+            'payment_id' => $payment->id,
+            'method' => 'mpesa',
+            'message' => _lang('Demo school: no real prompt is sent and no money moves. The payment will confirm in a few seconds.'),
+        ], _lang('Payment prompt sent to your phone.'));
+    }
+
     private function startPaystack(PaymentRequest $payment, Setting $setting, $user): JsonResponse
     {
         $paystack = PaystackService::fromPaymentInfo($setting->payment_info);
@@ -436,6 +480,8 @@ class OnlineFeePaymentController extends Controller
                 : PaystackService::fromPaymentInfo($setting?->payment_info)->isConfigured();
             if ($setting && $setting->status == '1' && $configured) {
                 $methods[] = ['key' => $key, 'label' => $label];
+            } elseif ($key === 'mpesa' && $this->simulatesMpesa($setting)) {
+                $methods[] = ['key' => 'mpesa', 'label' => 'M-Pesa (demo – no money moves)'];
             }
         }
 
