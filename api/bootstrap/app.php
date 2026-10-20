@@ -45,6 +45,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Staff only reach the modules their role's permissions allow (same groups as the sidebar).
         $middleware->appendToGroup('api', \App\Http\Middleware\EnforceStaffPermissions::class);
+
+        // Shared demo logins cannot change their own login details.
+        $middleware->appendToGroup('api', \App\Http\Middleware\ProtectDemoAccounts::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

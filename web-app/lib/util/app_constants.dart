@@ -60,6 +60,7 @@ class AppConstants {
 
 
   static const String loginUri = '/api/login';
+  static const String demoAccountsUri = '/api/demo-accounts';
   static const String branches = '/api/branches';
   static const String institutes = '/api/institutes';
   static const String getDefaultTheme = '/api/frontend/default-theme';

@@ -43,3 +43,12 @@ Route::middleware(['auth:api', 'check.subscription'])->group(function () {
     Route::get('/curriculum', [\App\Http\Controllers\CurriculumController::class, 'index']);
     Route::post('/curriculum/apply', [\App\Http\Controllers\CurriculumController::class, 'apply'])->middleware('throttle:10,1');
 });
+
+// Demo logins for the sign-in page: only on the demo school's own website.
+Route::get('/demo-accounts', function (\Illuminate\Http\Request $request) {
+    $domain = \App\Support\DemoAccounts::domain();
+    $from = strtolower((string) ($request->header('X-Domain') ?: $request->getHost()));
+    $accounts = \App\Support\DemoAccounts::enabled() && $domain && $from === strtolower($domain) ? \App\Support\DemoAccounts::forSignIn() : [];
+
+    return response()->json(['status' => true, 'message' => 'Demo accounts', 'data' => ['accounts' => $accounts], 'errors' => []]);
+})->middleware('throttle:30,1');

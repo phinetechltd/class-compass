@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:class_compass/api_handle/api_client.dart';
 import 'package:class_compass/common/widget/custom_button.dart';
 import 'package:class_compass/common/widget/custom_contaner.dart';
 import 'package:class_compass/common/widget/custom_snackbar.dart';
 import 'package:class_compass/common/widget/custom_text_field.dart';
-import 'package:class_compass/common/widget/responsive_grid_widget.dart';
 import 'package:class_compass/feature/authentication/logic/authentication_controller.dart';
 import 'package:class_compass/feature/authentication/presentation/widgets/animation_widget.dart';
 import 'package:class_compass/helper/app_color_helper.dart';
@@ -26,13 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  /// Demo logins published by the server for the demo school's domain only.
+  List<_DemoAccount> _demoAccounts = [];
+  int? _demoSelected;
+
   @override
   void initState() {
     super.initState();
-    if (AppConstants.demo) {
-      userNameController.text = "superadmin@gmail.com";
-      passwordController.text = "12345678";
-    }
+    _loadDemoAccounts();
 
     if (Get.find<AuthenticationController>().isLoggedIn()) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -46,6 +47,58 @@ class _LoginScreenState extends State<LoginScreen> {
     userNameController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadDemoAccounts() async {
+    try {
+      final res = await Get.find<ApiClient>().getData(AppConstants.demoAccountsUri);
+      final list = res.statusCode == 200 ? res.body?['data']?['accounts'] : null;
+      if (list is List && mounted) {
+        setState(() => _demoAccounts = list.whereType<Map>().map((m) => _DemoAccount(
+            '${m['label'] ?? ''}', '${m['description'] ?? ''}', '${m['email'] ?? ''}', '${m['password'] ?? ''}')).where((a) => a.email.isNotEmpty).toList());
+      }
+    } catch (_) {}
+  }
+
+  void _useDemo(int i, AuthenticationController controller) {
+    final a = _demoAccounts[i];
+    setState(() => _demoSelected = i);
+    userNameController.text = a.email;
+    passwordController.text = a.password;
+  }
+
+  Widget _demoPanel(AuthenticationController controller) {
+    final primary = systemLandingPagePrimaryColor();
+    return Container(
+      margin: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+      padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+      decoration: BoxDecoration(
+        color: primary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: primary.withValues(alpha: 0.25)),
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(children: [
+          Icon(Icons.play_circle_fill_rounded, color: primary, size: 20),
+          const SizedBox(width: 8),
+          Expanded(child: Text('Try a demo account', style: textHeavy.copyWith(fontSize: 15))),
+        ]),
+        const SizedBox(height: 4),
+        Text('Pick a role to fill in its login, then press Login. Demo data resets every night.',
+            style: textRegular.copyWith(fontSize: 12, color: Theme.of(context).hintColor)),
+        const SizedBox(height: Dimensions.paddingSizeSmall),
+        Wrap(spacing: 8, runSpacing: 8, children: [
+          for (var i = 0; i < _demoAccounts.length; i++)
+            Tooltip(message: _demoAccounts[i].description, child: ChoiceChip(
+              label: Text(_demoAccounts[i].label),
+              selected: _demoSelected == i,
+              selectedColor: primary,
+              labelStyle: textMedium.copyWith(fontSize: 13, color: _demoSelected == i ? Colors.white : null),
+              onSelected: (_) => _useDemo(i, controller),
+            )),
+        ]),
+      ]),
+    );
   }
 
   void login(AuthenticationController controller) {
@@ -72,28 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     controller.login(username, password);
-  }
-
-  Widget demoButton({
-    required AuthenticationController controller,
-    required int index,
-    required String email,
-    required String role,
-    required String text,
-  }) {
-    return Expanded(child: CustomButton(onTap: () {
-          controller.setSelectedIndex(index);
-          userNameController.text = email;
-          passwordController.text = "12345678";
-          controller.setUserType(role);
-        },
-        text: text,
-        showBorderOnly: controller.selectedIndex != index,
-        borderColor: systemPrimaryColor().withValues(alpha: .125),
-        textColor: controller.selectedIndex == index ? Colors.white : Theme.of(context).textTheme.displayLarge!.color!,
-        buttonColor: controller.selectedIndex == index ? systemPrimaryColor() : Colors.transparent,
-      ),
-    );
   }
 
   @override
@@ -176,56 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: Dimensions.paddingSizeSmall),
 
-                    if (AppConstants.demo) ...[
-                      Padding(padding: const EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-                        child: ResponsiveMasonryGrid(children: [
-                          demoButton(controller: authenticationController,
-                              index: 1,
-                              email: "superadmin@gmail.com",
-                              role: "superAdmin",
-                              text: "super_admin".tr),
-
-                          demoButton(controller: authenticationController,
-                              index: 2,
-                              email: "systemadmin@gmail.com",
-                              role: "systemAdmin",
-                              text: "system_admin".tr),
-
-                          demoButton(controller: authenticationController,
-                              index: 3,
-                              email: "librarian@gmail.com",
-                              role: "librarian",
-                              text: "librarian".tr),
-
-                          demoButton(controller: authenticationController,
-                              index: 4,
-                              email: "accountant@gmail.com",
-                              role: "accounting",
-                              text: "accounting".tr),
-                          demoButton(controller: authenticationController,
-                              index: 5,
-                              email: "teacher1@gmail.com",
-                              role: "teacher",
-                              text: "teacher".tr),
-                          demoButton(controller: authenticationController,
-                              index: 6,
-                              email: "parent@gmail.com",
-                              role: "parent",
-                              text: "login_as_a_parents".tr),
-
-                          demoButton(controller: authenticationController,
-                              index: 7,
-                              email: "student@gmail.com",
-                              role: "student",
-                              text: "login_as_a_student".tr),
-
-                        ]),
-                      ),
-
-
-
-
-                    ],
+                    if (_demoAccounts.isNotEmpty) _demoPanel(authenticationController),
                   ])),
               ]),
             )));
@@ -239,4 +221,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+class _DemoAccount {
+  final String label, description, email, password;
+  _DemoAccount(this.label, this.description, this.email, this.password);
 }

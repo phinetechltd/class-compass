@@ -63,7 +63,7 @@ class KenyaDemoCommand extends Command
             );
 
             // Learner
-            $learnerUserId = DB::table('users')->where('email', 'learner@classcompass.test')->value('id')
+            $learnerUserId = DB::table('users')->whereIn('email', ['learner@classcompass.test', 'learner@demo.classcompass.co.ke'])->value('id')
                 ?? DB::table('users')->insertGetId($scope + [
                     'name' => 'Wanjiku Kamau', 'email' => 'learner@classcompass.test', 'phone' => '254700000101',
                     'password' => Hash::make($password), 'role_id' => 7, 'user_type' => 'Student', 'status' => 1,
@@ -82,7 +82,7 @@ class KenyaDemoCommand extends Command
             );
 
             // Parent
-            $parentUserId = DB::table('users')->where('email', 'parent@classcompass.test')->value('id')
+            $parentUserId = DB::table('users')->whereIn('email', ['parent@classcompass.test', 'parent@demo.classcompass.co.ke'])->value('id')
                 ?? DB::table('users')->insertGetId($scope + [
                     'name' => 'Peter Kamau', 'email' => 'parent@classcompass.test', 'phone' => '254700000102',
                     'password' => Hash::make($password), 'role_id' => 8, 'user_type' => 'Parent', 'status' => 1,
@@ -118,7 +118,7 @@ class KenyaDemoCommand extends Command
      */
     private function seedActivity(array $scope): void
     {
-        $studentId = DB::table('students')->where('user_id', DB::table('users')->where('email', 'learner@classcompass.test')->value('id'))->value('id');
+        $studentId = DB::table('students')->where('user_id', DB::table('users')->whereIn('email', ['learner@classcompass.test', 'learner@demo.classcompass.co.ke'])->value('id'))->value('id');
         $session = DB::table('student_sessions')->where('student_id', $studentId)->first();
         $periodId = DB::table('periods')->where($scope)->orderBy('serial_no')->value('id');
         if (! $studentId || ! $session || ! $periodId) {
@@ -141,7 +141,7 @@ class KenyaDemoCommand extends Command
         if (DB::table('student_collections')->where('student_id', $studentId)->exists()) {
             return;
         }
-        $parent = \Modules\Authentication\Models\User::where('email', 'parent@classcompass.test')->first();
+        $parent = \Modules\Authentication\Models\User::whereIn('email', ['parent@classcompass.test', 'parent@demo.classcompass.co.ke'])->first();
         $service = app(\Modules\Gateways\Services\OnlineFeePaymentService::class);
         $payment = \Modules\Gateways\Models\PaymentRequest::create([
             'institute_id' => $scope['institute_id'],

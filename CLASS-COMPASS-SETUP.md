@@ -31,12 +31,18 @@ Deploy from `api/` and `web-app/`. `api-update-patch/` is the vendor's 1.5 → 1
 
 | Role | Email | Password |
 |---|---|---|
-| Super admin (demo school) | `superadmin@gmail.com` | vendor default (see `SECURITY-AUDIT.md`) |
-| SaaS / platform admin | `saasadmin@gmail.com` | vendor default |
-| Parent of Wanjiku Kamau (Grade 7) | `parent@classcompass.test` | `ParentDemo2026` |
-| Learner | `learner@classcompass.test` | `ParentDemo2026` |
+| School admin (demo school) | `admin@demo.classcompass.co.ke` | the demo password |
+| Bursar | `bursar@demo.classcompass.co.ke` | the demo password |
+| Parent of Wanjiku Kamau (Grade 7) | `parent@demo.classcompass.co.ke` | the demo password |
+| Learner | `learner@demo.classcompass.co.ke` | the demo password |
+| SaaS / platform admin | `saasadmin@gmail.com` (locally) | vendor default locally; random on the live server |
 
-Change or delete all of these before going live.
+Set the demo logins with `php artisan classcompass:demo-accounts --password="..." --domain=demo.classcompass.co.ke --admin-email=you@your-domain`. That command:
+- renames the four demo users to the emails above and gives them the shared demo password;
+- gives every other vendor demo account a random password, and prints the platform admin's new password once;
+- saves the list to `storage/app/demo-accounts.json`.
+
+The sign-in page shows a "Try a demo account" panel, only on the demo school's domain. Demo users can't change their password or profile, and `--refresh` runs every night at 02:00 to put the demo logins back. `--disable` hides the panel.
 
 To re-create the Kenyan demo data in any institute, run `php artisan classcompass:kenya-demo --institute=1 --branch=1 --password=...`. It sets up the CBC classes, fees of KSh 15,000 per term, and the learner and parent accounts above.
 
@@ -158,3 +164,27 @@ Upload `web-app/build/web/`. The web server must send unknown paths to `index.ht
    ```
 6. Change every demo password (or delete the demo users) and delete `demo.sql` from the server.
 7. Read `SECURITY-AUDIT.md`.
+
+---
+
+## Live server (HostPinnacle VPS, 78.159.126.22)
+
+Class Compass sits next to the other sites on this server and has its own files, database, nginx sites and logs:
+
+| Part | Where |
+|---|---|
+| Code | `/var/www/classcompass/api` (Laravel), `/var/www/classcompass/web` (Flutter web build) |
+| nginx | `/etc/nginx/sites-available/classcompass` |
+| Logs | `/var/log/nginx/classcompass*.log`, `api/storage/logs/` |
+| Database | MariaDB `classcompass`, user `classcompass` on localhost; the password is only in `api/.env` |
+| PHP | PHP 8.3-FPM (`/run/php/php8.3-fpm.sock`) |
+| Schedule | `/etc/cron.d/classcompass` runs `php artisan schedule:run` every minute as `www-data` |
+
+Domains (A records → 78.159.126.22):
+- `classcompass.co.ke` and `www`: the product website and the API (`/api`)
+- `demo.classcompass.co.ke`: the demo school website and app, with the demo logins
+- `app.classcompass.co.ke`: the same web app, for other schools
+
+HTTPS: once DNS resolves, run `certbot --nginx -d classcompass.co.ke -d www.classcompass.co.ke -d demo.classcompass.co.ke -d app.classcompass.co.ke`.
+
+Update the web app with `flutter build web --release --dart-define=API_BASE_URL=https://classcompass.co.ke --output build/web-prod`, then copy `build/web-prod/` to `/var/www/classcompass/web/`.
