@@ -181,10 +181,13 @@ Class Compass sits next to the other sites on this server and has its own files,
 | Schedule | `/etc/cron.d/classcompass` runs `php artisan schedule:run` every minute as `www-data` |
 
 Domains (A records → 78.159.126.22):
-- `classcompass.co.ke` and `www`: the product website and the API (`/api`)
-- `demo.classcompass.co.ke`: the demo school website and app, with the demo logins
-- `app.classcompass.co.ke`: the same web app, for other schools
+- `classcompass.co.ke` and `www`: the product website and the API (`/api`). HTTPS.
+- `app.classcompass.co.ke`: **the system**. Every school, the platform admin and the demo accounts sign in at https://app.classcompass.co.ke/sign-in. HTTPS. Its sign-in page shows the demo logins.
+- `demo.classcompass.co.ke`: the demo school's public website. Needs an A record, then HTTPS.
+- `*.classcompass.co.ke` (wildcard record): each new school's own website, for example `st-marys.classcompass.co.ke`, assigned at sign-up. nginx and CORS already accept any subdomain.
 
-HTTPS: once DNS resolves, run `certbot --nginx -d classcompass.co.ke -d www.classcompass.co.ke -d demo.classcompass.co.ke -d app.classcompass.co.ke`.
+HTTPS: one Let's Encrypt certificate (`--cert-name classcompass.co.ke`) covers the domain, `www` and `app`, and certbot's timer renews it. Once `demo` resolves, add it:
+`certbot --nginx --cert-name classcompass.co.ke -d classcompass.co.ke -d www.classcompass.co.ke -d app.classcompass.co.ke -d demo.classcompass.co.ke`.
+School subdomains need either a certificate each or one wildcard certificate (DNS-01 challenge, which needs a DNS provider certbot can drive, such as Cloudflare).
 
 Update the web app with `flutter build web --release --dart-define=API_BASE_URL=https://classcompass.co.ke --output build/web-prod`, then copy `build/web-prod/` to `/var/www/classcompass/web/`.
