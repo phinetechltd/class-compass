@@ -22,8 +22,6 @@ class DomainHelper {
   }
   static const String _localhostDomain = 'localhost';
   static const String _vercelDomain = 'vercel.app';
-  static const String _demoDomain = 'mightyschool.xyz';
-  static const String _demoDomain2 = 'fuedevs.com';
 
   static String? _cachedDomain;
 
@@ -74,9 +72,7 @@ class DomainHelper {
     }
 
     // Vercel or your demo domains → fallback
-    if (host.contains(_vercelDomain) ||
-        host.contains(_demoDomain) ||
-        host.contains(_demoDomain2)) {
+    if (host.contains(_vercelDomain)) {
       return _fallbackDomain;
     }
 

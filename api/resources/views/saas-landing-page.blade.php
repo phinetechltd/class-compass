@@ -163,6 +163,15 @@
 .demo-role code{font-size:12.5px;background:var(--bg);padding:3px 7px;border-radius:6px;color:var(--navy);word-break:break-all}
 .demo-arrow{float:right;font-size:18px;color:var(--muted);opacity:0;transition:opacity .15s,transform .15s}
 .demo-role:hover .demo-arrow{opacity:1;transform:translateX(4px)}
+        /* blog */
+        .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:40px}
+        @media (max-width:960px){.blog-grid{grid-template-columns:1fr}}
+        .blog-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s}
+        .blog-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+        .blog-card img{aspect-ratio:16/9;object-fit:cover;width:100%}
+        .blog-card > div{padding:20px 22px 24px;display:flex;flex-direction:column;gap:8px}
+        .blog-card h3{font-size:19px;margin:0}.blog-card p{margin:0;font-size:15px}
+        .meta-sm{font-size:13px;color:var(--muted);font-weight:600}
         /* dashboard mock */
         .mock{position:relative;background:linear-gradient(160deg,#0b2a5c,#06204a);border-radius:24px;padding:18px;box-shadow:0 40px 80px rgba(4,50,104,.28);color:#d9e6fb;animation:float 7s ease-in-out infinite}
         .mock-top{display:flex;align-items:center;gap:8px;margin-bottom:14px}.mock-top i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.mock-top i:nth-child(2){background:#febc2e}.mock-top i:nth-child(3){background:#28c840}
@@ -283,6 +292,7 @@
             <a href="#mpesa">M-Pesa fees</a>
             <a href="#pricing">Pricing</a>
             <a href="#faq">FAQ</a>
+            <a href="{{ route('blog.index') }}">Blog</a>
         </nav>
         <div class="nav-cta">
             <a class="login" href="{{ $frontend }}/sign-in">Log in</a>
@@ -499,6 +509,28 @@
         </div>
     </section>
 
+    @php $blogPosts = \App\Support\Blog::latest(3); @endphp
+    @if ($blogPosts->isNotEmpty())
+    <section id="blog">
+        <div class="wrap">
+            <div class="reveal" style="text-align:center;max-width:720px;margin:0 auto">
+                <span class="eyebrow">From the blog</span>
+                <h2 style="margin-top:10px">Guides for running a modern Kenyan school</h2>
+                <p class="lead" style="margin-top:14px">CBC assessment, M-Pesa fees, parent communication and admissions, written for head teachers and bursars.</p>
+            </div>
+            <div class="blog-grid">
+                @foreach ($blogPosts as $post)
+                    <a class="blog-card reveal" href="{{ route('blog.show', $post['slug']) }}">
+                        @if ($post['cover'])<img src="{{ asset('assets/classcompass/'.$post['cover']) }}" alt="" loading="lazy" width="800" height="450">@endif
+                        <div><span class="meta-sm">{{ implode(' · ', array_slice($post['tags'], 0, 2)) }}</span><h3>{{ $post['title'] }}</h3><p>{{ $post['excerpt'] }}</p><span class="meta-sm">{{ $post['date']->format('j M Y') }} · {{ $post['minutes'] }} min read</span></div>
+                    </a>
+                @endforeach
+            </div>
+            <div style="text-align:center;margin-top:28px"><a class="btn btn-ghost" href="{{ route('blog.index') }}">Read all posts</a></div>
+        </div>
+    </section>
+    @endif
+
     <section id="faq" style="background:var(--bg)">
         <div class="wrap center">
             <span class="eyebrow">Questions</span>
@@ -572,7 +604,7 @@
                 <p style="margin:0;max-width:320px">School management for Kenyan schools — CBC, M-Pesa fees, attendance and parent communication in one place.</p>
             </div>
             <div><h4>Product</h4><a href="#features">Features</a><a href="#curriculum">CBC & curricula</a><a href="#mpesa">M-Pesa fees</a><a href="#pricing">Pricing</a></div>
-            <div><h4>Get started</h4><a href="#get-started">Free trial</a><a href="{{ $frontend }}/sign-in">Log in</a><a href="#faq">FAQ</a></div>
+            <div><h4>Get started</h4><a href="#get-started">Free trial</a><a href="{{ $frontend }}/sign-in">Log in</a><a href="#faq">FAQ</a><a href="{{ route('blog.index') }}">Blog</a><a href="https://taristudio.africa" rel="noopener">Tari Studio: AI ads for schools</a></div>
             <div><h4>Contact</h4>
                 @if (! empty($contact['email']))<a href="mailto:{{ $contact['email'] }}">{{ $contact['email'] }}</a>@endif
                 @if (! empty($contact['phone']))<a href="tel:{{ preg_replace('/\s+/', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>@endif
