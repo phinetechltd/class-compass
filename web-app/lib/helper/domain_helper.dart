@@ -94,8 +94,6 @@ class DomainHelper {
 
         if (host.contains(_localhostDomain) ||
             host.contains(_vercelDomain) ||
-            host.contains(_demoDomain) ||
-            host.contains(_demoDomain2) ||
             _isIpAddress(host)) {
           return null;
         }
