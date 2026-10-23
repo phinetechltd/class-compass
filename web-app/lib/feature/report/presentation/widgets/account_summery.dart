@@ -18,7 +18,7 @@ class DashboardAccountChartWidgetState extends State<DashboardAccountChartWidget
 
   @override
   void initState() {
-    Get.find<DashboardReportController>().getYearlyCashFlowData("2025", "3");
+    Get.find<DashboardReportController>().getYearlyCashFlowData("${DateTime.now().year}", "3");
     _tooltip = TooltipBehavior(enable: true);
     super.initState();
   }
@@ -26,46 +26,102 @@ class DashboardAccountChartWidgetState extends State<DashboardAccountChartWidget
   @override
   Widget build(BuildContext context) {
     return GetBuilder<DashboardReportController>(builder: (reportController) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-           Text("income_and_expense_overview".tr, style: textSemiBold.copyWith(fontSize: Dimensions.fontSizeExtraLarge,)),
-          const SizedBox(height: 4),
-           Text("track_the_institute".tr,
-            style: textRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color:Theme.of(context).hintColor),),
-          const SizedBox(height: Dimensions.paddingSizeDefault),
-          SfCartesianChart(
-
-            primaryXAxis: CategoryAxis(
-                majorGridLines: MajorGridLines(color: Theme.of(context).cardColor)
-            ),
-            primaryYAxis: NumericAxis(numberFormat: NumberFormat.compact(),
-              majorGridLines: MajorGridLines(color: Theme.of(context).hintColor)
-            ),
-            tooltipBehavior: _tooltip,
-            series: <CartesianSeries<ChartData, String>>[
-              SplineAreaSeries<ChartData, String>(
-                name: "total_income".tr,
-                dataSource: reportController.incomeData,
-                xValueMapper: (ChartData data, _) => data.x,
-                yValueMapper: (ChartData data, _) => data.y,
-                color: Theme.of(context).colorScheme.surfaceContainer.withValues(alpha:0.25),
-                borderColor: Theme.of(context).colorScheme.surfaceContainer,
-                borderWidth: 3,
-                markerSettings: MarkerSettings(isVisible: true, color: Theme.of(context).colorScheme.surfaceContainer),
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.accent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                ),
+                child: const Icon(Icons.insights_rounded, size: 20, color: AppColors.accentDark),
               ),
-              SplineAreaSeries<ChartData, String>(
-                name: "total_expense".tr,
-                dataSource: reportController.expenseData,
-                xValueMapper: (ChartData data, _) => data.x,
-                yValueMapper: (ChartData data, _) => data.y,
-                color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
-                borderColor: Theme.of(context).colorScheme.error,
-                borderWidth: 3,
-                markerSettings: MarkerSettings(isVisible: true, color: Theme.of(context).colorScheme.error),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("income_and_expense_overview".tr,
+                        style: textBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                    const SizedBox(height: 2),
+                    Text("track_the_institute".tr,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textRegular.copyWith(
+                            fontSize: Dimensions.fontSizeSmall,
+                            color: AppColors.textTertiary)),
+                  ],
+                ),
               ),
             ],
-            legend: const Legend(isVisible: true, position: LegendPosition.bottom),
           ),
-        ],
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 260,
+            child: SfCartesianChart(
+              tooltipBehavior: _tooltip,
+              primaryXAxis: CategoryAxis(
+                majorGridLines: const MajorGridLines(width: 0),
+                axisLine: const AxisLine(width: 0),
+                majorTickLines: const MajorTickLines(size: 0),
+                labelStyle: textRegular.copyWith(
+                  fontSize: 12,
+                  color: AppColors.textTertiary,
+                ),
+              ),
+              primaryYAxis: NumericAxis(
+                numberFormat: NumberFormat.compact(),
+                axisLine: const AxisLine(width: 0),
+                majorTickLines: const MajorTickLines(size: 0),
+                majorGridLines: const MajorGridLines(
+                  color: AppColors.borderLight,
+                  dashArray: [4, 4],
+                ),
+                labelStyle: textRegular.copyWith(
+                  fontSize: 12,
+                  color: AppColors.textTertiary,
+                ),
+              ),
+              legend: const Legend(
+                isVisible: true,
+                position: LegendPosition.bottom,
+                iconHeight: 10,
+                iconWidth: 10,
+              ),
+              series: <CartesianSeries<ChartData, String>>[
+                SplineAreaSeries<ChartData, String>(
+                  name: "total_income".tr,
+                  dataSource: reportController.incomeData,
+                  xValueMapper: (ChartData data, _) => data.x,
+                  yValueMapper: (ChartData data, _) => data.y,
+                  color: AppColors.accent.withValues(alpha: 0.22),
+                  borderColor: AppColors.accent,
+                  borderWidth: 3,
+                  markerSettings: MarkerSettings(
+                    isVisible: true,
+                    color: AppColors.accent,
+                  ),
+                ),
+                SplineAreaSeries<ChartData, String>(
+                  name: "total_expense".tr,
+                  dataSource: reportController.expenseData,
+                  xValueMapper: (ChartData data, _) => data.x,
+                  yValueMapper: (ChartData data, _) => data.y,
+                  color: AppColors.error.withValues(alpha: 0.20),
+                  borderColor: AppColors.error,
+                  borderWidth: 3,
+                  markerSettings: MarkerSettings(
+                    isVisible: true,
+                    color: AppColors.error,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]),
       );
     });
   }

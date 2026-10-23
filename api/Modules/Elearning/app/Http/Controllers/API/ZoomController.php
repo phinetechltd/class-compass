@@ -48,7 +48,7 @@ class ZoomController extends Controller
     public function index(Request $request): JsonResponse
     {
         $perPage = request('per_page', 10);
-        $zoomMeetings = ZoomMeeting::where('start_time', '>=', Carbon::now('Asia/Dhaka')->toDateTimeString())
+        $zoomMeetings = ZoomMeeting::where('start_time', '>=', Carbon::now(config('app.timezone'))->toDateTimeString())
             ->latest()
             ->paginate($perPage);
 
@@ -64,13 +64,13 @@ class ZoomController extends Controller
         $request->validate([
             'course_id' => 'required|integer|exists:courses,id',
             'topic' => 'required|string|max:255',
-            'start_time' => 'required|date_format:Y-m-d\TH:i:s\Z', // ISO 8601 format (Asia/Dhaka)
+            'start_time' => 'required|date_format:Y-m-d\TH:i:s\Z', // ISO 8601 format
             'duration' => 'required|integer|min:1', // Duration in minutes
             'password' => 'nullable|string|min:6|max:10', // Optional password, min 6 chars
             'agenda' => 'nullable|string|max:5000',
         ]);
 
-        $startTimeUtc = Carbon::parse($request->start_time, 'Asia/Dhaka')->setTimezone('Asia/Dhaka')->toIso8601String();
+        $startTimeUtc = Carbon::parse($request->start_time, config('app.timezone'))->setTimezone(config('app.timezone'))->toIso8601String();
         $response = Http::withToken($this->zoomToken)->post(config('zoom.base_url').'users/me/meetings', [
             'topic' => $request->topic,
             'type' => 2, // Scheduled Meeting
@@ -78,7 +78,7 @@ class ZoomController extends Controller
             'duration' => $request->duration,
             'password' => '123456',
             'agenda' => 'Live Class',
-            'timezone' => 'Asia/Dhaka',
+            'timezone' => config('app.timezone'),
             'settings' => [
                 'host_video' => true,
                 'participant_video' => true,

@@ -7,7 +7,6 @@ import 'package:class_compass/feature/dashboard/controller/dashboard_controller.
 import 'package:class_compass/feature/dashboard/model/navigation_model.dart';
 import 'package:class_compass/feature/profile/logic/profile_controller.dart';
 import 'package:class_compass/helper/app_color_helper.dart';
-import 'package:class_compass/util/app_constants.dart';
 import 'package:class_compass/util/dimensions.dart';
 import 'package:class_compass/util/styles.dart';
 
@@ -22,14 +21,7 @@ class CustomNavbarWidget extends StatelessWidget {
           builder: (profileController) {
             String? userType = profileController.profileModel?.data?.role;
 
-            List<NavigationModel> item = [];
-            if(userType?.toLowerCase() == AppConstants.parent.toLowerCase()) {
-              item = menuController.parentsItem;
-            }else if(userType?.toLowerCase() == AppConstants.studentType.toLowerCase()) {
-              item = menuController.studentsItem;
-            } else {
-              item = menuController.item;
-            }
+            final List<NavigationModel> item = menuController.itemsFor(userType, profileController.profileModel?.data?.permissions ?? const []);
             return CircleNavBar(activeIndex: menuController.currentTab,
               onTap: (index) {
                 menuController.setTabIndex(index);

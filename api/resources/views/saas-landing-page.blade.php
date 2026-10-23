@@ -7,14 +7,14 @@
     $demo = rtrim((string) config('app.demo_url'), '/');
     // Prices in KES per term (3 terms a year). Keep in sync with the `plans` table.
     $plans = [
-        ['key' => 'msingi', 'name' => 'Msingi', 'tag' => 'Small schools getting started', 'price' => 2500, 'learners' => 'Up to 200 learners', 'max' => 200,
+        ['key' => 'standard', 'name' => 'Standard', 'tag' => 'Small schools getting started', 'price' => 2500, 'learners' => 'Up to 200 learners', 'max' => 200,
             'features' => ['Learners, staff & classes', 'Attendance (daily & subject)', 'CBC assessments & report cards', 'Fee billing + M-Pesa STK collection', 'Parent & learner portal', 'Up to 5 staff accounts', 'Email & WhatsApp support']],
-        ['key' => 'shule', 'name' => 'Shule', 'tag' => 'Most popular for primary & junior schools', 'price' => 5000, 'learners' => '201 – 700 learners', 'max' => 700, 'popular' => true,
-            'features' => ['Everything in Msingi', 'SMS notifications to parents', 'Timetables & exam scheduling', 'Library & question bank', 'Payroll & staff attendance', 'Up to 20 staff accounts', 'Priority WhatsApp support']],
-        ['key' => 'shule-pro', 'name' => 'Shule Pro', 'tag' => 'Boarding & large day schools', 'price' => 9500, 'learners' => '701 – 1,500 learners', 'max' => 1500,
-            'features' => ['Everything in Shule', 'Boarding / hostel & meals', 'Transport routes & buses', 'E-learning, quizzes & Zoom classes', 'Full accounting & reports', 'Up to 3 campuses, unlimited staff', 'Onboarding training for your team']],
-        ['key' => 'enterprise', 'name' => 'Group & College', 'tag' => 'School groups, colleges & TVETs', 'price' => null, 'learners' => '1,500+ learners or many campuses', 'max' => PHP_INT_MAX,
-            'features' => ['Everything in Shule Pro', 'Unlimited campuses & branches', 'College / TVET structure (units, years)', 'Data migration from your old system', 'Custom domain & branded parent app', 'Dedicated account manager', 'Service-level agreement']],
+        ['key' => 'pro', 'name' => 'Pro', 'tag' => 'Most popular for growing schools', 'price' => 5000, 'learners' => '201 – 700 learners', 'max' => 700, 'popular' => true,
+            'features' => ['Everything in Standard', 'SMS notifications to parents', 'Timetables & exam scheduling', 'Library & question bank', 'Payroll & staff attendance', 'Up to 20 staff accounts', 'Priority WhatsApp support']],
+        ['key' => 'pro-max', 'name' => 'Pro Max', 'tag' => 'Boarding & large day schools', 'price' => 9500, 'learners' => '701 – 1,500 learners', 'max' => 1500,
+            'features' => ['Everything in Pro', 'Boarding / hostel & meals', 'Transport routes & buses', 'E-learning, quizzes & Zoom classes', 'Full accounting & reports', 'Up to 3 campuses, unlimited staff', 'Onboarding training for your team']],
+        ['key' => 'enterprise', 'name' => 'Institution', 'tag' => 'School groups & multi-campus', 'price' => null, 'learners' => '1,500+ learners or many campuses', 'max' => PHP_INT_MAX,
+            'features' => ['Everything in Pro Max', 'Unlimited campuses & branches', 'College / TVET structure (units, years)', 'Data migration from your old system', 'Custom domain & branded parent app', 'Dedicated account manager', 'Service-level agreement']],
     ];
     $modules = [
         ['users', 'Learners & admissions', 'Profiles, admission numbers, streams, promotions and transfer letters.'],
@@ -34,7 +34,7 @@
         ['Does Class Compass support CBC?', 'Yes. Choose CBC when you sign up and we create PP1 to Grade 12 with the learning areas for each level and the KNEC rubric (EE1 – BE2). You can also run 8-4-4 (Form 3–4), British (Cambridge / Edexcel) or a College / TVET structure — or mix them across campuses.'],
         ['How do parents pay fees with M-Pesa?', 'The school adds its own Paybill or Till through Safaricom Daraja. A parent opens the parent portal, enters the amount and their phone number, and approves the STK prompt with their M-Pesa PIN. The money goes straight to the school\'s account and the receipt is posted to the learner\'s fee statement automatically. Card and mobile money via Paystack is also available.'],
         ['Is there a free trial?', 'Yes — 30 days free with no card needed. Your data stays when you upgrade, and you pay per term.'],
-        ['Can we move data from our current system or Excel?', 'Yes. Learners, staff and fee balances can be imported from Excel. On the Group & College plan we do the migration for you.'],
+        ['Can we move data from our current system or Excel?', 'Yes. Learners, staff and fee balances can be imported from Excel. On the Institution plan we do the migration for you.'],
         ['Is our data safe?', 'Each school\'s data is kept separate, passwords are encrypted, access is controlled by roles, and actions are logged. We designed Class Compass with Kenya\'s Data Protection Act, 2019 in mind, and we never sell school or learner data.'],
         ['Does it work on phones?', 'Yes. Class Compass works in any browser on phones, tablets and computers, and there are Android and desktop apps for staff and parents.'],
     ];
@@ -82,12 +82,18 @@
         h2{font-size:clamp(28px,3.6vw,42px);font-weight:800}
         .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
         .lead{font-size:clamp(16px,1.6vw,19px);color:var(--text);max-width:640px}
-        .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:12px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:16px;transition:transform .15s ease,box-shadow .2s ease,background .2s}
+        button{font-family:inherit}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 22px;border-radius:12px;font:inherit;font-weight:700;text-decoration:none;border:1.5px solid transparent;cursor:pointer;font-size:16px;line-height:1.2;transition:transform .15s ease,box-shadow .2s ease,background .2s ease,color .2s ease,border-color .2s ease}
         .btn:hover{transform:translateY(-1px)}
+        .btn:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
         .btn-primary{background:linear-gradient(135deg,var(--blue),#0057d9);color:#fff;box-shadow:0 10px 24px rgba(1,109,246,.28)}
-        .btn-green{background:var(--green);color:#03261c}
-        .btn-ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
-        .btn-white{background:#fff;color:var(--navy)}
+        .btn-primary:hover{box-shadow:0 14px 30px rgba(1,109,246,.36)}
+        .btn-green{background:var(--green);color:#03261c;box-shadow:0 10px 24px rgba(0,192,144,.28)}
+        .btn-green:hover{background:#00ad82}
+        .btn-ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+        .btn-ghost:hover{border-color:var(--blue);color:var(--blue);background:#f7fbff}
+        .btn-white{background:#fff;color:var(--navy);box-shadow:0 10px 24px rgba(0,0,0,.12)}
+        .btn-white:hover{background:#f2f7ff}
         section{padding:clamp(64px,8vw,110px) 0}
         .center{text-align:center}.center .lead{margin-inline:auto}
         /* nav */
@@ -116,31 +122,47 @@
         .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--bg);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--navy)}
         @media (max-width:960px){.hero .wrap{grid-template-columns:1fr}}
         /* real screenshots */
-        .shots{position:relative;padding:0 6% 50px 0}
-        .browser{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 40px 80px rgba(4,50,104,.25);border:1px solid var(--line)}
+        .shots{position:relative;padding:0 6% 50px 0;display:flex;align-items:center;gap:40px;justify-content:center;flex-wrap:wrap}
+        .browser{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 40px 80px rgba(4,50,104,.25);border:1px solid var(--line);width:100%;max-width:640px}
         .browser .bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#eef3fa;border-bottom:1px solid var(--line)}
         .browser .bar i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.browser .bar i:nth-child(2){background:#febc2e}.browser .bar i:nth-child(3){background:#28c840}
         .browser .bar span{margin-left:10px;font-size:12px;color:var(--muted);background:#fff;border-radius:6px;padding:3px 10px}
         .browser img{display:block;width:100%;height:auto}
-        .phone{position:absolute;right:0;bottom:0;width:23%;min-width:120px;border-radius:30px;padding:8px;background:#0b1a33;box-shadow:0 30px 60px rgba(4,50,104,.35);animation:float 7s ease-in-out infinite}
-        .phone img{display:block;width:100%;border-radius:23px}
+        .phone{position:relative;border-radius:30px;overflow:hidden;background:#0b1a33;box-shadow:0 30px 60px rgba(4,50,104,.35);width:100%;max-width:260px;aspect-ratio:9/19;flex-shrink:0;animation:float 7s ease-in-out infinite;display:flex;align-items:center;justify-content:center}
+        .phone::before{content:"";position:absolute;inset:0;border-radius:30px;border:2px solid rgba(255,255,255,.1);pointer-events:none;z-index:2}
+        .phone img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;z-index:1}
         .shot-note{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--muted)}
-        @media (max-width:560px){.phone{right:0;width:38%}}
-        .tour-tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:36px 0 24px}
-        .tour-tabs button{border:1px solid var(--line);background:#fff;color:var(--navy);font:inherit;font-weight:700;font-size:14px;padding:10px 16px;border-radius:999px;cursor:pointer}
-        .tour-tabs button[aria-selected=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
-        .tour-panel{display:none}.tour-panel.on{display:grid;grid-template-columns:1.6fr 1fr;gap:36px;align-items:center}
-        .tour-panel.mobile.on{grid-template-columns:1fr 1.1fr}
-        @media (max-width:960px){.tour-panel.on,.tour-panel.mobile.on{grid-template-columns:1fr}}
+        @media (max-width:960px){.shots{flex-direction:column}.phone{max-width:220px}}
+        @media (max-width:560px){.phone{max-width:180px}}
+        /* tour panel phones */
         .tour-panel .phones{display:flex;gap:16px;justify-content:center}
-        .tour-panel .phones img{width:100%;max-width:250px;border-radius:26px;border:8px solid #0b1a33;box-shadow:0 30px 60px rgba(4,50,104,.22)}
-        .tour-panel .phones picture{width:46%;max-width:250px}
+        .tour-panel .phones picture{width:100%;max-width:230px;position:relative;aspect-ratio:9/19;border-radius:26px;overflow:hidden;box-shadow:0 20px 40px rgba(4,50,104,.2);border:1px solid var(--line);background:#0b1a33;display:flex;align-items:center;justify-content:center}
+        .tour-panel .phones img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
         .tour-panel h3{font-size:24px;margin-bottom:10px}
-        .demo-box{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px}
+        /* tour tabs */
+        .tour-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:38px auto 30px;padding:6px;background:var(--bg);border:1px solid var(--line);border-radius:999px;width:fit-content;max-width:100%}
+        .tour-tabs button{appearance:none;border:0;background:transparent;padding:10px 18px;border-radius:999px;font:inherit;font-size:14.5px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s,box-shadow .2s}
+        .tour-tabs button:hover{color:var(--navy)}
+        .tour-tabs button[aria-selected="true"]{background:#fff;color:var(--navy);box-shadow:0 4px 12px rgba(4,50,104,.12)}
+        .tour-tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+        @media (max-width:560px){.tour-tabs{width:100%;border-radius:18px}.tour-tabs button{flex:1 1 40%;padding:10px 12px;font-size:13.5px}}
+        /* tour panels */
+        .tour-panel{display:none;grid-template-columns:1.35fr 1fr;gap:48px;align-items:center;margin-top:6px}
+        .tour-panel.on{display:grid;animation:fadeup .45s ease both}
+        .tour-panel .browser{max-width:100%}
+        .tour-panel>div:last-child{max-width:460px}
+        .tour-panel>div:last-child p{font-size:16px}
+        .tour-panel.mobile{grid-template-columns:1fr 1fr}
+        @media (max-width:960px){.tour-panel,.tour-panel.mobile{grid-template-columns:1fr;gap:28px}.tour-panel>div:last-child{max-width:100%;text-align:center}.tour-panel>div:last-child .btn{margin-inline:auto}}
+        @keyframes fadeup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+        .demo-box{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px}
         @media (max-width:960px){.demo-box{grid-template-columns:1fr 1fr}}@media (max-width:520px){.demo-box{grid-template-columns:1fr}}
-        .demo-role{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-        .demo-role b{display:block;color:var(--navy);font-size:17px;margin-bottom:4px}.demo-role p{margin:0 0 10px;font-size:14px}
-        .demo-role code{font-size:12.5px;background:var(--bg);padding:3px 7px;border-radius:6px;color:var(--navy);word-break:break-all}
+.demo-role{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .05s}
+.demo-role:hover{border-color:var(--blue);box-shadow:0 8px 24px rgba(1,109,246,.12);transform:translateY(-2px)}
+.demo-role:active{transform:translateY(0)}
+.demo-role code{font-size:12.5px;background:var(--bg);padding:3px 7px;border-radius:6px;color:var(--navy);word-break:break-all}
+.demo-arrow{float:right;font-size:18px;color:var(--muted);opacity:0;transition:opacity .15s,transform .15s}
+.demo-role:hover .demo-arrow{opacity:1;transform:translateX(4px)}
         /* dashboard mock */
         .mock{position:relative;background:linear-gradient(160deg,#0b2a5c,#06204a);border-radius:24px;padding:18px;box-shadow:0 40px 80px rgba(4,50,104,.28);color:#d9e6fb;animation:float 7s ease-in-out infinite}
         .mock-top{display:flex;align-items:center;gap:8px;margin-bottom:14px}.mock-top i{width:10px;height:10px;border-radius:50%;background:#ff5f57}.mock-top i:nth-child(2){background:#febc2e}.mock-top i:nth-child(3){background:#28c840}
@@ -178,7 +200,7 @@
         .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
         .split.rev .media{order:-1}
         @media (max-width:960px){.split{grid-template-columns:1fr}.split.rev .media{order:0}}
-        .media img{border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:560px;margin-inline:auto}
+        .media img{border-radius:22px;box-shadow:var(--shadow);width:100%;max-width:560px;margin-inline:auto;object-fit:contain}
         .media img.plain{border-radius:0;box-shadow:none;max-width:520px}
         .ticks{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:12px}
         .ticks li{display:flex;gap:12px;align-items:flex-start}.ticks .ic{color:var(--green);margin-top:2px}
@@ -294,7 +316,7 @@
                 <div class="shots">
                     <div class="browser"><div class="bar"><i></i><i></i><i></i><span>demo.classcompass.co.ke · Dashboard</span></div>
                         <picture><source srcset="{{ $screen('admin-dashboard.webp') }}" type="image/webp"><img src="{{ $screen('admin-dashboard.jpg') }}" alt="Class Compass school dashboard with learners, teachers, attendance and fees collected" width="1440" height="900"></picture></div>
-                    <div class="phone"><picture><source srcset="{{ $screen('parent-mpesa-paid.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-paid.jpg') }}" alt="Parent paying school fees with M-Pesa in the parent portal" width="390" height="844" loading="lazy"></picture></div>
+                    <div class="phone"><picture><source srcset="{{ $screen('parent-mpesa-paid.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-paid.jpg') }}" alt="Parent paying school fees with M-Pesa in the parent portal" loading="lazy"></picture></div>
                 </div>
                 <div class="shot-note"><svg class="ic" style="width:16px;height:16px"><use href="#i-badge-check"/></svg>Real screens from the live demo school.</div>
             </div>
@@ -343,25 +365,25 @@
             @endforeach
             <div class="tour-panel mobile" id="t-mpesa" role="tabpanel">
                 <div class="phones">
-                    <picture><source srcset="{{ $screen('parent-mpesa-pay.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-pay.jpg') }}" alt="Pay school fees screen with M-Pesa" loading="lazy" width="390" height="844"></picture>
-                    <picture><source srcset="{{ $screen('parent-mpesa-paid.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-paid.jpg') }}" alt="M-Pesa payment confirmed with receipt" loading="lazy" width="390" height="844"></picture>
+                    <picture><source srcset="{{ $screen('parent-mpesa-pay.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-pay.jpg') }}" alt="Pay school fees screen with M-Pesa" loading="lazy"></picture>
+                    <picture><source srcset="{{ $screen('parent-mpesa-paid.webp') }}" type="image/webp"><img src="{{ $screen('parent-mpesa-paid.jpg') }}" alt="M-Pesa payment confirmed with receipt" loading="lazy"></picture>
                 </div>
                 <div><h3>M-Pesa STK push</h3><p>The parent enters the amount and their Safaricom number, approves the prompt with their PIN, and the receipt posts to the learner's fee statement and the school's accounts at once.</p><a class="btn btn-primary" href="{{ $demo }}/sign-in" style="margin-top:12px">Try paying as a parent <svg class="ic"><use href="#i-arrow-right"/></svg></a></div>
             </div>
             <div class="tour-panel mobile" id="t-parent" role="tabpanel">
                 <div class="phones">
-                    <picture><source srcset="{{ $screen('parent-dashboard.webp') }}" type="image/webp"><img src="{{ $screen('parent-dashboard.jpg') }}" alt="Parent portal dashboard with attendance" loading="lazy" width="390" height="844"></picture>
-                    <picture><source srcset="{{ $screen('parent-fees.webp') }}" type="image/webp"><img src="{{ $screen('parent-fees.jpg') }}" alt="Parent portal fee statement" loading="lazy" width="390" height="844"></picture>
+                    <picture><source srcset="{{ $screen('parent-dashboard.webp') }}" type="image/webp"><img src="{{ $screen('parent-dashboard.jpg') }}" alt="Parent portal dashboard with attendance" loading="lazy"></picture>
+                    <picture><source srcset="{{ $screen('parent-fees.webp') }}" type="image/webp"><img src="{{ $screen('parent-fees.jpg') }}" alt="Parent portal fee statement" loading="lazy"></picture>
                 </div>
                 <div><h3>Parent &amp; learner app</h3><p>Attendance, report cards, homework, notices and fee balances on any phone — in the browser or the Android app.</p><a class="btn btn-primary" href="{{ $demo }}/sign-in" style="margin-top:12px">Log in as a parent <svg class="ic"><use href="#i-arrow-right"/></svg></a></div>
             </div>
 
             <div class="demo-box">
-                @foreach ([['School admin', 'Runs the whole school: learners, staff, fees, exams and the website.', 'admin@demo.classcompass.co.ke'], ['Bursar', 'Fee collection, M-Pesa payments, invoices and accounts.', 'bursar@demo.classcompass.co.ke'], ['Parent', 'Wanjiku\'s parent: attendance, report cards and paying fees.', 'parent@demo.classcompass.co.ke'], ['Learner', 'Wanjiku Kamau, Grade 7: timetable, homework and results.', 'learner@demo.classcompass.co.ke']] as [$role, $what, $email])
-                    <div class="demo-role reveal"><b>{{ $role }}</b><p>{{ $what }}</p><code>{{ $email }}</code></div>
+                @foreach ([['School admin', 'Runs the whole school: learners, staff, fees, exams and the website.', 'admin@demo.classcompass.co.ke'], ['Bursar', 'Fee collection, M-Pesa payments, invoices and accounts.', 'bursar@demo.classcompass.co.ke'], ['Parent', "Wanjiku's parent: attendance, report cards and paying fees.", 'parent@demo.classcompass.co.ke'], ['Learner', 'Wanjiku Kamau, Grade 7: timetable, homework and results.', 'learner@demo.classcompass.co.ke']] as [$role, $what, $email])
+                    <div class="demo-role reveal" data-email="{{ $email }}" role="button" tabindex="0"><b>{{ $role }}</b><p>{{ $what }}</p><code>{{ $email }}</code><span class="demo-arrow">›</span></div>
                 @endforeach
             </div>
-            <p style="text-align:center;margin-top:22px">The demo password is shown on the <a href="{{ $demo }}/sign-in"><strong>demo sign-in page</strong></a>. Demo data resets every night.</p>
+            <p style="text-align:center;margin-top:22px">One-click to try any role — demo data resets every night. Or <a href="{{ $demo }}/sign-in"><strong>open the demo sign-in page</strong></a> directly.</p>
         </div>
     </section>
 
@@ -415,7 +437,7 @@
                     <li><svg class="ic"><use href="#i-check"/></svg>Cards and mobile money through Paystack as well.</li>
                 </ul>
             </div>
-            <div class="media reveal"><picture><source srcset="{{ $screen('mpesa-flow.webp') }}" type="image/webp"><img class="plain" src="{{ $screen('mpesa-flow.png') }}" alt="Real Class Compass screens: paying school fees with M-Pesa and the confirmed receipt" loading="lazy" width="950" height="896"></picture></div>
+            <div class="media reveal"><picture><source srcset="{{ $screen('mpesa-flow.webp') }}" type="image/webp"><img src="{{ $screen('mpesa-flow.png') }}" alt="Real Class Compass screens: paying school fees with M-Pesa and the confirmed receipt" loading="lazy"></picture></div>
         </div>
     </section>
 
@@ -431,7 +453,7 @@
                     <li><svg class="ic"><use href="#i-check"/></svg>Works on low-cost Android phones and in any browser.</li>
                 </ul>
             </div>
-            <div class="media reveal"><picture><source srcset="{{ $screen('parent-flow.webp') }}" type="image/webp"><img class="plain" src="{{ $screen('parent-flow.png') }}" alt="Real Class Compass parent portal screens: dashboard and fee statement" loading="lazy" width="950" height="896"></picture></div>
+            <div class="media reveal"><picture><source srcset="{{ $screen('parent-flow.webp') }}" type="image/webp"><img src="{{ $screen('parent-flow.png') }}" alt="Real Class Compass parent portal screens: dashboard and fee statement" loading="lazy"></picture></div>
         </div>
     </section>
 
@@ -641,6 +663,58 @@
             .catch(function () { show('We could not reach the server. Check your connection and try again.'); })
             .finally(function () { btn.disabled = false; btn.textContent = 'Create my school account'; });
     });
+
+    // One-click demo login: fetch demo accounts, then on role click authenticate and open the portal.
+    (function () {
+        var roles = document.querySelectorAll('.demo-role'), demoUrl = @json($demo), frontend = @json($frontend);
+        if (!roles.length) return;
+        var status = document.createElement('div');
+        status.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:10px 16px;border-radius:10px;background:#fff;border:1px solid var(--line);color:var(--ink);font-size:14px;box-shadow:var(--shadow);z-index:100;display:none';
+        document.body.appendChild(status);
+        function flash(text, ok) {
+            status.style.background = ok ? '#ecfdf3' : '#fff1f0';
+            status.style.color = ok ? '#067647' : '#b42318';
+            status.style.borderColor = ok ? '#abefc6' : '#fecdca';
+            status.textContent = text;
+            status.style.display = 'block';
+            setTimeout(function () { status.style.display = 'none'; }, 2500);
+        }
+        function openPortal(token, email) {
+            sessionStorage.setItem('cc_demo_token', token);
+            sessionStorage.setItem('cc_demo_email', email);
+            var win = window.open(frontend + '/sign-in?demo=1', '_blank');
+            if (!win) { window.location.href = frontend + '/sign-in?demo=1'; }
+        }
+        fetch(@json(url('/api/demo-accounts')), { headers: { 'Accept': 'application/json', 'X-Domain': window.location.hostname } })
+            .then(function (r) { return r.ok ? r.json() : { data: { accounts: [] } }; })
+            .then(function (j) {
+                var accounts = (j.data && j.data.accounts) || [];
+                roles.forEach(function (role) {
+                    var email = role.getAttribute('data-email');
+                    var acc = accounts.find(function (a) { return a.email === email; });
+                    if (!acc) return;
+                    role.addEventListener('click', function () {
+                        flash('Signing in as ' + acc.label + '…');
+                        fetch(@json(url('/api/demo-login')), {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                            body: JSON.stringify({ email: email })
+                        })
+                            .then(function (r) { return r.json(); })
+                            .then(function (res) {
+                                if (res.status && res.data && res.data.access_token) {
+                                    openPortal(res.data.access_token, email);
+                                } else {
+                                    flash(res.message || 'Demo login failed. Try the sign-in page.', false);
+                                }
+                            })
+                            .catch(function () { flash('Could not reach the server. Try the sign-in page.', false); });
+                    });
+                    role.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); role.click(); } });
+                });
+            })
+            .catch(function () {});
+    })();
 })();
 </script>
 </body>

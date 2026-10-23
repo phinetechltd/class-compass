@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:class_compass/util/app_constants.dart';
+import 'package:class_compass/util/styles.dart';
 
 class ThemeController extends GetxController {
   final SharedPreferences sharedPreferences;
@@ -27,4 +28,6 @@ class ThemeController extends GetxController {
     }
     update();
   }
+
+  ThemeData get currentTheme => _darkTheme ? AppTheme.darkTheme() : AppTheme.lightTheme();
 }

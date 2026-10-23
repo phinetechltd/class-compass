@@ -34,9 +34,9 @@ class WebAppBar extends StatelessWidget implements PreferredSizeWidget {
                         if(userType == AppConstants.parent)...[
                           const ParentHeaderSectionWidget()
                         ],
-                        if(userType != "SAAS Admin" && userType != AppConstants.parent && userType != AppConstants.studentType)
+                        if(userType != null && userType != "SAAS Admin" && userType != AppConstants.parent && userType != AppConstants.studentType)
                         const SizedBox(width: 250, child: ChangeBranchWidget()),
-                        if(userType != "SAAS Admin" && userType != AppConstants.parent && userType != AppConstants.studentType)
+                        if(userType != null && userType != "SAAS Admin" && userType != AppConstants.parent && userType != AppConstants.studentType)
                         const SizedBox(width: 200, child: ChangeSessionWidget()),
                         MenuButtonWebIcon( icon: AppConstants.languages[localizationController.selectIndex].imageUrl, onTap: () {
                           showModalBottomSheet(backgroundColor: Colors.transparent,

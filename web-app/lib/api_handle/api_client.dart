@@ -372,9 +372,9 @@ class ApiClient extends GetxService {
     if(localResponse.statusCode != 200 && localResponse.body != null && localResponse.body is !String) {
       if(localResponse.body.toString().startsWith('{errors: [{code:')) {
         ErrorResponse errorResponse = ErrorResponse.fromJson(localResponse.body);
-        localResponse = Response(statusCode: localResponse.statusCode, body: localResponse.body, statusText: errorResponse.errors![0].message);
+        localResponse = Response(statusCode: localResponse.statusCode, body: localResponse.body, statusText: errorResponse.errors![0].message, request: localResponse.request);
       }else if(localResponse.body.toString().startsWith('{message')) {
-        localResponse = Response(statusCode: localResponse.statusCode, body: localResponse.body, statusText: localResponse.body['message']);
+        localResponse = Response(statusCode: localResponse.statusCode, body: localResponse.body, statusText: localResponse.body['message'], request: localResponse.request);
       }
     }else if(localResponse.statusCode != 200 && localResponse.body == null) {
       localResponse = Response(statusCode: 0, statusText: noInternetMessage);

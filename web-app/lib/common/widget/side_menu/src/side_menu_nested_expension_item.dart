@@ -123,12 +123,63 @@ class SideMenuNestedItem extends StatelessWidget {
       }
     );
   }
+  /// Every menu entry gets an icon that matches its label. Using Material
+  /// rounded icons keeps the sidebar consistent and avoids reusing the generic
+  /// dashboard glyph for unrelated sections.
+  static const Map<String, IconData> _menuIcons = {
+    'dashboard': Icons.space_dashboard_rounded,
+    'branch': Icons.account_tree_rounded,
+    'student_information': Icons.groups_rounded,
+    'student_attendance': Icons.fact_check_rounded,
+    'academic_configuration': Icons.tune_rounded,
+    'staff_information': Icons.badge_rounded,
+    'payroll_management': Icons.payments_rounded,
+    'fees_management': Icons.request_quote_rounded,
+    'account_management': Icons.account_balance_rounded,
+    'accounting_reports_management': Icons.assessment_rounded,
+    'routine_management': Icons.calendar_month_rounded,
+    'library_management': Icons.local_library_rounded,
+    'exm_management': Icons.assignment_rounded,
+    'layout_and_certificate': Icons.workspace_premium_rounded,
+    'sms_management': Icons.sms_rounded,
+    'administrator': Icons.admin_panel_settings_rounded,
+    'question_bank': Icons.quiz_rounded,
+    'course_management': Icons.menu_book_rounded,
+    'fees_reports_management': Icons.insert_chart_rounded,
+    'master_configuration': Icons.settings_suggest_rounded,
+    'zoom_meeting': Icons.videocam_rounded,
+    'cms_management': Icons.language_rounded,
+    'hostel_management': Icons.hotel_rounded,
+    'transportation_management': Icons.directions_bus_rounded,
+    'AI': Icons.auto_awesome_rounded,
+    'inventory_management': Icons.inventory_2_rounded,
+    'supplier_management': Icons.local_shipping_rounded,
+    'reports_management': Icons.bar_chart_rounded,
+    'routine': Icons.calendar_month_rounded,
+    'fees': Icons.payments_rounded,
+    'pay_school_fees': Icons.phone_android_rounded,
+    'library': Icons.local_library_rounded,
+    'assignment': Icons.assignment_rounded,
+    'behavior': Icons.psychology_rounded,
+    'notice': Icons.campaign_rounded,
+    'event': Icons.event_rounded,
+    'exams': Icons.quiz_rounded,
+    'profile': Icons.person_rounded,
+  };
+
   Widget buildIcon(String iconPath, Color? iconColor) {
+    final Color resolvedColor = iconColor ?? Theme.of(Get.context!).hintColor;
+    final IconData? matched = _menuIcons[keyValue];
+
+    if (matched != null) {
+      return Icon(matched, size: 18, color: resolvedColor);
+    }
+
     final isSvg = iconPath.toLowerCase().endsWith('.svg');
 
-    return isSvg ? SvgPicture.asset(iconPath, height: 16,
-      colorFilter: ColorFilter.mode(iconColor??Theme.of(Get.context!).hintColor, BlendMode.srcIn),
-    ) : Image.asset(iconPath, height: 16, color: iconColor);
+    return isSvg ? SvgPicture.asset(iconPath, height: 18,
+      colorFilter: ColorFilter.mode(resolvedColor, BlendMode.srcIn),
+    ) : Image.asset(iconPath, height: 18, color: resolvedColor);
   }
 
 }

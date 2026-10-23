@@ -6,6 +6,7 @@ import 'package:class_compass/feature/curriculum/curriculum_screen.dart';
 import 'package:class_compass/feature/online_fees/online_fees_screen.dart';
 import 'package:class_compass/common/enums/enums.dart';
 import 'package:class_compass/common/widget/set_canonical_url_widget.dart';
+import 'package:class_compass/feature/common/presentation/screens/placeholder_screens.dart';
 import 'package:class_compass/feature/academic_configuration/class/presentation/screens/class_screen.dart';
 import 'package:class_compass/feature/academic_configuration/department/presentation/screens/department_screen.dart';
 import 'package:class_compass/feature/academic_configuration/group/presentation/screens/group_screen.dart';
@@ -500,6 +501,37 @@ class RouteHelper {
   static const String frontendCourses = '/all-courses';
   static const String smsConfig = '/sms-config';
 
+  // Inventory Management
+  static const String inventoryItems = '/inventory-items';
+  static const String inventoryCategories = '/inventory-categories';
+  static const String inventorySuppliers = '/inventory-suppliers';
+  static const String inventoryStock = '/inventory-stock';
+  static const String inventoryTransactions = '/inventory-transactions';
+
+  // Supplier Management
+  static const String supplierList = '/supplier-list';
+  static const String addSupplier = '/add-supplier';
+  static const String supplierPayments = '/supplier-payments';
+  static const String supplierLedger = '/supplier-ledger';
+
+  // Reports
+  static const String studentAttendanceReport = '/student-attendance-report';
+  static const String studentFeeReport = '/student-fee-report';
+  static const String studentPerformanceReport = '/student-performance-report';
+  static const String examResultReport = '/exam-result-report';
+  static const String classWiseReport = '/class-wise-report';
+  static const String feeCollectionReport = '/fee-collection-report';
+  static const String expenseReport = '/expense-report';
+  static const String incomeReport = '/income-report';
+  static const String balanceSheetReport = '/balance-sheet-report';
+  static const String libraryBookReport = '/library-book-report';
+  static const String libraryIssueReport = '/library-issue-report';
+  static const String transportRouteReport = '/transport-route-report';
+  static const String transportVehicleReport = '/transport-vehicle-report';
+  static const String inventoryStockReport = '/inventory-stock-report';
+  static const String inventoryTransactionReport = '/inventory-transaction-report';
+  static const String supplierReport = '/supplier-report';
+  static const String supplierPaymentReport = '/supplier-payment-report';
 
   static const String paymentGateway = '/payment-gateway';
   static String getPaymentGatewayRoute() => paymentGateway;
@@ -758,6 +790,37 @@ class RouteHelper {
   static getBusRoutesRoute() => busRoutes;
   static getBusStopsRoute() => busStops;
   static getTransportMembersRoute() => transportMembers;
+
+  // Inventory Management
+  static getInventoryItemsRoute() => inventoryItems;
+  static getInventoryCategoriesRoute() => inventoryCategories;
+  static getInventorySuppliersRoute() => inventorySuppliers;
+  static getInventoryStockRoute() => inventoryStock;
+  static getInventoryTransactionsRoute() => inventoryTransactions;
+
+  // Supplier Management
+  static getSupplierListRoute() => supplierList;
+  static getAddSupplierRoute() => addSupplier;
+  static getSupplierPaymentsRoute() => supplierPayments;
+  static getSupplierLedgerRoute() => supplierLedger;
+
+  // Reports
+  static getStudentAttendanceReportRoute() => studentAttendanceReport;
+  static getStudentFeeReportRoute() => studentFeeReport;
+  static getStudentPerformanceReport() => studentPerformanceReport;
+  static getExamResultReportRoute() => examResultReport;
+  static getClassWiseReportRoute() => classWiseReport;
+  static getFeeCollectionReportRoute() => feeCollectionReport;
+  static getExpenseReportRoute() => expenseReport;
+  static getIncomeReportRoute() => incomeReport;
+  static getLibraryBookReportRoute() => libraryBookReport;
+  static getLibraryIssueReportRoute() => libraryIssueReport;
+  static getTransportRouteReportRoute() => transportRouteReport;
+  static getTransportVehicleReportRoute() => transportVehicleReport;
+  static getInventoryStockReportRoute() => inventoryStockReport;
+  static getInventoryTransactionReportRoute() => inventoryTransactionReport;
+  static getSupplierReportRoute() => supplierReport;
+  static getSupplierPaymentReportRoute() => supplierPaymentReport;
 
   static getSmsConfigRoute() => smsConfig;
 
@@ -1071,6 +1134,37 @@ class RouteHelper {
     customPage(name: transportMembers, page: () => const TransportMemberScreen()),
     customPage(name: idCard, page: () => const IdCardScreen()),
 
+    // Inventory Management
+    customPage(name: inventoryItems, page: () => const InventoryItemsScreen()),
+    customPage(name: inventoryCategories, page: () => const InventoryCategoriesScreen()),
+    customPage(name: inventorySuppliers, page: () => const InventorySuppliersScreen()),
+    customPage(name: inventoryStock, page: () => const InventoryStockScreen()),
+    customPage(name: inventoryTransactions, page: () => const InventoryTransactionsScreen()),
+
+    // Supplier Management
+    customPage(name: supplierList, page: () => const SupplierListScreen()),
+    customPage(name: addSupplier, page: () => const AddSupplierScreen()),
+    customPage(name: supplierPayments, page: () => const SupplierPaymentsScreen()),
+    customPage(name: supplierLedger, page: () => const SupplierLedgerScreen()),
+
+    // Reports
+    customPage(name: studentAttendanceReport, page: () => const StudentAttendanceReportScreen()),
+    customPage(name: studentFeeReport, page: () => const StudentFeeReportScreen()),
+    customPage(name: studentPerformanceReport, page: () => const StudentPerformanceReportScreen()),
+    customPage(name: examResultReport, page: () => const ExamResultReportScreen()),
+    customPage(name: classWiseReport, page: () => const ClassWiseReportScreen()),
+    customPage(name: feeCollectionReport, page: () => const FeeCollectionReportScreen()),
+    customPage(name: expenseReport, page: () => const ExpenseReportScreen()),
+    customPage(name: incomeReport, page: () => const IncomeReportScreen()),
+    customPage(name: balanceSheetReport, page: () => const BalanceSheetReportScreen()),
+    customPage(name: libraryBookReport, page: () => const LibraryBookReportScreen()),
+    customPage(name: libraryIssueReport, page: () => const LibraryIssueReportScreen()),
+    customPage(name: transportRouteReport, page: () => const TransportRouteReportScreen()),
+    customPage(name: transportVehicleReport, page: () => const TransportVehicleReportScreen()),
+    customPage(name: inventoryStockReport, page: () => const InventoryStockReportScreen()),
+    customPage(name: inventoryTransactionReport, page: () => const InventoryTransactionReportScreen()),
+    customPage(name: supplierReport, page: () => const SupplierReportScreen()),
+    customPage(name: supplierPaymentReport, page: () => const SupplierPaymentReportScreen()),
 
     //------------------------Question Bank-------------------------------
     GetPage(name: questionCategory, page: () => const QuestionCategoryScreen()),

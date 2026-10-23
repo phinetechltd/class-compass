@@ -270,6 +270,9 @@ class DashboardController extends Controller
             'total_packages' => $totalPackages,
             'total_active_institute' => $totalActiveInstitute,
             'total_inactive_institute' => $totalInactiveInstitute,
+            'total_learners' => DB::table('students')->whereNull('deleted_at')->count(),
+            'new_institutes_this_month' => Institute::where('created_at', '>=', now()->startOfMonth())->count(),
+            'total_revenue_year' => (float) $monthlyData->sum(),
             'transactions' => $monthlyReport,
             'package_report' => $planUsage,
         ], _lang('SaaS Dashboard data has been fetched successfully.'));

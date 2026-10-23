@@ -10,6 +10,7 @@ use Modules\Student\Http\Controllers\API\StudentQuizController;
 
 Route::middleware(['student', 'auth:api'])->group(function () {
     Route::get('student/my-profile', [StudentDashboardController::class, 'my_profile']);
+    Route::get('student/dashboard-data', [StudentDashboardController::class, 'dashboardData']);
     Route::post('student/profile-update', [StudentDashboardController::class, 'profileUpdate']);
     Route::get('student/my-subjects', [StudentDashboardController::class, 'my_subjects']);
     Route::get('student/class-routine', [StudentDashboardController::class, 'class_routine']);

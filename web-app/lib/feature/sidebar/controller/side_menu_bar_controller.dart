@@ -909,8 +909,110 @@ class SideMenuBarController extends GetxController implements GetxService{
             icon: Images.dashboardSvgIcon, children:   [
           SideMenuChildItemWidget(title: 'chatgpt'.tr, keyValue: "",
               onTap: () => Get.toNamed(RouteHelper.getChatGptRoute())),
-            ])
+            ]),
 
+      // Inventory Management Section
+      if(profileController.hasPermission("inventory_panel_off"))
+      SideMenuNestedItem(title: "inventory_management".tr, keyValue: "inventory_management", parent: true,
+          icon: Images.dashboardSvgIcon, children: [
+
+        SideMenuChildItemWidget(title: 'inventory_items'.tr, keyValue: "inventory_items",
+          onTap: () => Get.toNamed(RouteHelper.getInventoryItemsRoute())),
+
+        SideMenuChildItemWidget(title: 'inventory_categories'.tr, keyValue: "inventory_categories",
+          onTap: () => Get.toNamed(RouteHelper.getInventoryCategoriesRoute())),
+
+        SideMenuChildItemWidget(title: 'inventory_suppliers'.tr, keyValue: "inventory_suppliers",
+          onTap: () => Get.toNamed(RouteHelper.getInventorySuppliersRoute())),
+
+        SideMenuChildItemWidget(title: 'inventory_stock'.tr, keyValue: "inventory_stock",
+          onTap: () => Get.toNamed(RouteHelper.getInventoryStockRoute())),
+
+        SideMenuChildItemWidget(title: 'inventory_transactions'.tr, keyValue: "inventory_transactions",
+          onTap: () => Get.toNamed(RouteHelper.getInventoryTransactionsRoute())),
+      ]),
+
+      // Supplier Management Section
+      if(profileController.hasPermission("supplier_panel_off"))
+      SideMenuNestedItem(title: "supplier_management".tr, keyValue: "supplier_management", parent: true,
+          icon: Images.dashboardSvgIcon, children: [
+
+        SideMenuChildItemWidget(title: 'supplier_list'.tr, keyValue: "supplier_list",
+          onTap: () => Get.toNamed(RouteHelper.getSupplierListRoute())),
+
+        SideMenuChildItemWidget(title: 'add_supplier'.tr, keyValue: "add_supplier",
+          onTap: () => Get.toNamed(RouteHelper.getAddSupplierRoute())),
+
+        SideMenuChildItemWidget(title: 'supplier_payments'.tr, keyValue: "supplier_payments",
+          onTap: () => Get.toNamed(RouteHelper.getSupplierPaymentsRoute())),
+
+        SideMenuChildItemWidget(title: 'supplier_ledger'.tr, keyValue: "supplier_ledger",
+          onTap: () => Get.toNamed(RouteHelper.getSupplierLedgerRoute())),
+      ]),
+
+      // Reports Management Section
+      if(profileController.hasPermission("reports_panel_off"))
+      SideMenuNestedItem(title: "reports_management".tr, keyValue: "reports_management", parent: true,
+          icon: Images.dashboardSvgIcon, children: [
+
+        // Student Reports
+        SideMenuChildItemWidget(title: 'student_attendance_report'.tr, keyValue: "student_attendance_report",
+          onTap: () => Get.toNamed(RouteHelper.getStudentAttendanceReportRoute())),
+
+        SideMenuChildItemWidget(title: 'student_fee_report'.tr, keyValue: "student_fee_report",
+          onTap: () => Get.toNamed(RouteHelper.getStudentFeeReportRoute())),
+
+        SideMenuChildItemWidget(title: 'student_performance_report'.tr, keyValue: "student_performance_report",
+          onTap: () => Get.toNamed(RouteHelper.getStudentPerformanceReport())),
+
+        // Academic Reports
+        SideMenuChildItemWidget(title: 'exam_result_report'.tr, keyValue: "exam_result_report",
+          onTap: () => Get.toNamed(RouteHelper.getExamResultReportRoute())),
+
+        SideMenuChildItemWidget(title: 'class_wise_report'.tr, keyValue: "class_wise_report",
+          onTap: () => Get.toNamed(RouteHelper.getClassWiseReportRoute())),
+
+        // Financial Reports
+        SideMenuChildItemWidget(title: 'fee_collection_report'.tr, keyValue: "fee_collection_report",
+          onTap: () => Get.toNamed(RouteHelper.getFeeCollectionReportRoute())),
+
+        SideMenuChildItemWidget(title: 'expense_report'.tr, keyValue: "expense_report",
+          onTap: () => Get.toNamed(RouteHelper.getExpenseReportRoute())),
+
+        SideMenuChildItemWidget(title: 'income_report'.tr, keyValue: "income_report",
+          onTap: () => Get.toNamed(RouteHelper.getIncomeReportRoute())),
+
+        SideMenuChildItemWidget(title: 'balance_sheet_report'.tr, keyValue: "balance_sheet_report",
+          onTap: () => Get.toNamed(RouteHelper.getBalanceSheetRoute())),
+
+        // Library Reports
+        SideMenuChildItemWidget(title: 'library_book_report'.tr, keyValue: "library_book_report",
+          onTap: () => Get.toNamed(RouteHelper.getLibraryBookReportRoute())),
+
+        SideMenuChildItemWidget(title: 'library_issue_report'.tr, keyValue: "library_issue_report",
+          onTap: () => Get.toNamed(RouteHelper.getLibraryIssueReportRoute())),
+
+        // Transport Reports
+        SideMenuChildItemWidget(title: 'transport_route_report'.tr, keyValue: "transport_route_report",
+          onTap: () => Get.toNamed(RouteHelper.getTransportRouteReportRoute())),
+
+        SideMenuChildItemWidget(title: 'transport_vehicle_report'.tr, keyValue: "transport_vehicle_report",
+          onTap: () => Get.toNamed(RouteHelper.getTransportVehicleReportRoute())),
+
+        // Inventory Reports
+        SideMenuChildItemWidget(title: 'inventory_stock_report'.tr, keyValue: "inventory_stock_report",
+          onTap: () => Get.toNamed(RouteHelper.getInventoryStockReportRoute())),
+
+        SideMenuChildItemWidget(title: 'inventory_transaction_report'.tr, keyValue: "inventory_transaction_report",
+          onTap: () => Get.toNamed(RouteHelper.getInventoryTransactionReportRoute())),
+
+        // Supplier Reports
+        SideMenuChildItemWidget(title: 'supplier_report'.tr, keyValue: "supplier_report",
+          onTap: () => Get.toNamed(RouteHelper.getSupplierReportRoute())),
+
+        SideMenuChildItemWidget(title: 'supplier_payment_report'.tr, keyValue: "supplier_payment_report",
+          onTap: () => Get.toNamed(RouteHelper.getSupplierPaymentReportRoute())),
+      ]),
     ];}
 
 

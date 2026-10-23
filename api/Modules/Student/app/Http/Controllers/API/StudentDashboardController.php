@@ -78,6 +78,17 @@ class StudentDashboardController extends Controller
         return $this->responseSuccess([], 'Profile Update Successfully Done.');
     }
 
+    /** The learner's own dashboard figures (same as their parent sees). */
+    public function dashboardData(): JsonResponse
+    {
+        $data = \App\Services\LearnerOverview::for((int) get_student_id());
+        if ($data === null) {
+            return $this->responseError([], _lang('Student not found.'), 404);
+        }
+
+        return $this->responseSuccess($data, 'Student overview fetched successfully.');
+    }
+
     public function my_profile(): JsonResponse
     {
         $id = get_student_id();

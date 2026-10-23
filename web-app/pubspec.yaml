@@ -102,3 +102,13 @@ flutter:
           weight: 700
         - asset: assets/font/OpenSans-Light.ttf
           weight: 300
+    - family: Inter
+      fonts:
+        - asset: assets/font/OpenSans-Regular.ttf
+          weight: 400
+        - asset: assets/font/OpenSans-Medium.ttf
+          weight: 500
+        - asset: assets/font/OpenSans-Bold.ttf
+          weight: 700
+        - asset: assets/font/OpenSans-Light.ttf
+          weight: 300

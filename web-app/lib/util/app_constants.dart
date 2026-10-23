@@ -427,6 +427,7 @@ class AppConstants {
  // Student Module
   static const String studentProfile = '/api/student/my-profile';
   static const String studentClassRoutine = '/api/student/class-routine';
+  static const String studentDashboardData = '/api/student/dashboard-data';
   static const String studentSubjectList = '/api/student/my-subjects';
   static const String studentLibrary = '/api/student/library-history';
   static const String studentAssignment = '/api/student/my-assignment';

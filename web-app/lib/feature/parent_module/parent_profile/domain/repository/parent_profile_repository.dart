@@ -1,4 +1,5 @@
-import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:get/get.dart';
+import 'package:class_compass/feature/profile/logic/profile_controller.dart';
 import 'package:class_compass/api_handle/api_client.dart';
 import 'package:class_compass/util/app_constants.dart';
 
@@ -11,8 +12,10 @@ class ParentProfileRepository{
     return await apiClient.getData(AppConstants.parentProfile);
   }
 
+  /// The same overview for a parent (their selected child) or for a learner (themselves).
   Future<Response?> getDashboardData() async {
-    return await apiClient.getData(AppConstants.parentDashboardData);
+    final role = Get.find<ProfileController>().profileModel?.data?.role;
+    return await apiClient.getData(role == AppConstants.studentType ? AppConstants.studentDashboardData : AppConstants.parentDashboardData);
   }
 
 }

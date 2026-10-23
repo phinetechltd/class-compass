@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:class_compass/util/app_constants.dart';
 import 'package:class_compass/common/model/popup_menu_model.dart';
 import 'package:class_compass/feature/administrator/notice/presentation/screens/notice_screen.dart';
 import 'package:class_compass/feature/dashboard/model/navigation_model.dart';
@@ -45,8 +46,8 @@ class DashboardController extends GetxController implements GetxService{
 
   final List<NavigationModel> item = [
     NavigationModel(name: 'dashboard'.tr, activeIcon: Images.homeActive, inactiveIcon: Images.home, screen: const HomeScreen()),
-    NavigationModel(name: 'fees'.tr, activeIcon: Images.fees, inactiveIcon: Images.fees, screen: const FeesManagementScreen()),
-    NavigationModel(name: 'student'.tr, activeIcon: Images.add, inactiveIcon: Images.add, screen: const AddNewStudentScreen()),
+    NavigationModel(name: 'fees'.tr, activeIcon: Images.fees, inactiveIcon: Images.fees, screen: const FeesManagementScreen(), permission: 'fees_management.'),
+    NavigationModel(name: 'student'.tr, activeIcon: Images.add, inactiveIcon: Images.add, screen: const AddNewStudentScreen(), permission: 'student_information.'),
     NavigationModel(name: 'notice'.tr, activeIcon: Images.notice, inactiveIcon: Images.notice, screen: const NoticeScreen()),
     NavigationModel(name: 'menu'.tr, activeIcon: Images.menuIcon, inactiveIcon: Images.menuIcon, screen: const MoreScreen()),
 
@@ -122,5 +123,13 @@ class DashboardController extends GetxController implements GetxService{
       ];
     }
 
+  }
+
+  /// Bottom-bar tabs for the signed-in user: parents and learners get their portal tabs; staff
+  /// only see tabs their role's permissions allow.
+  List<NavigationModel> itemsFor(String? role, List<String> permissions) {
+    if (role?.toLowerCase() == AppConstants.parent.toLowerCase()) return parentsItem;
+    if (role?.toLowerCase() == AppConstants.studentType.toLowerCase()) return studentsItem;
+    return item.where((i) => i.permission == null || permissions.any((p) => p.startsWith(i.permission!))).toList();
   }
 }

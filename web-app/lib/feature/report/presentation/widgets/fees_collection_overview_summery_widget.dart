@@ -26,7 +26,7 @@ class FeesCollectionOverviewWidgetState extends State<FeesCollectionOverviewWidg
       header: '',
       color: Colors.grey,
       canShowMarker: false,
-      format: 'point.x\n● Collected: \$point.y1\n● Outstanding: \$point.y2',
+      format: 'point.x\nCollected: \$point.y1\nOutstanding: \$point.y2',
       textStyle: textRegular.copyWith(fontSize: 12),
     );
     Get.find<DashboardReportController>().getFeesCollectionData("${DateTime.now().year}");
@@ -36,66 +36,102 @@ class FeesCollectionOverviewWidgetState extends State<FeesCollectionOverviewWidg
   Widget build(BuildContext context) {
     return GetBuilder<DashboardReportController>(
       builder: (reportController) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text("fees_collection_overview".tr,
-                        style: textBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
-                    const SizedBox(height: 4),
-                    Text("track_collected_and_pending_fees_over_time".tr,
-                        style: textRegular.copyWith(color: Colors.grey))]),
-            ]),
-
-          const SizedBox(height: 16),
-
-            SizedBox(
-              height: 250,
-              child: SfCartesianChart(
-                key: UniqueKey(),
-                tooltipBehavior: _tooltip,
-                primaryXAxis: const CategoryAxis(
-                  majorGridLines: MajorGridLines(width: 0),
-                  axisLine: AxisLine(width: 0),
-                ),
-                primaryYAxis: NumericAxis(
-                  numberFormat: NumberFormat.compactCurrency(
-                      symbol: "${Get.find<SystemSettingsController>().generalSettingModel?.data?.currencySymbol}"),
-                  majorGridLines: MajorGridLines(
-                    color: Theme.of(context).hintColor,
-                    dashArray: const [4, 4],
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(AppBorderRadius.md),
+                    ),
+                    child: const Icon(Icons.request_quote_rounded,
+                        size: 20, color: AppColors.accentDark),
                   ),
-                ),
-                legend: const Legend(
-                  isVisible: true,
-                  position: LegendPosition.bottom,
-                  iconHeight: 10,
-                  iconWidth: 10,
-                ),
-                series: <CartesianSeries<ChartData, String>>[
-                  StackedColumnSeries<ChartData, String>(
-                    name: "collected".tr,
-                    width: 0.2,
-                    dataSource: reportController.collectedData,
-                    xValueMapper: (ChartData data, _) => data.x,
-                    yValueMapper: (ChartData data, _) => data.y,
-                    color: Theme.of(context).primaryColor,
-                    enableTooltip: true,
-                  ),
-                  StackedColumnSeries<ChartData, String>(
-                    name: "outstanding",
-                    width: 0.2,
-                    borderRadius: const BorderRadius.vertical(top:Radius.circular(5)),
-                    dataSource: reportController.outstandingData,
-                    xValueMapper: (ChartData data, _) => data.x,
-                    yValueMapper: (ChartData data, _) => data.y,
-                    color: Theme.of(context).cardColor,
-                    enableTooltip: true,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("fees_collection_overview".tr,
+                            style: textBold.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                        const SizedBox(height: 2),
+                        Text("track_collected_and_pending_fees_over_time".tr,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: textRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: AppColors.textTertiary)),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 250,
+                child: SfCartesianChart(
+                  key: UniqueKey(),
+                  tooltipBehavior: _tooltip,
+                  primaryXAxis: CategoryAxis(
+                    majorGridLines: const MajorGridLines(width: 0),
+                    axisLine: const AxisLine(width: 0),
+                    majorTickLines: const MajorTickLines(size: 0),
+                    labelStyle: textRegular.copyWith(
+                      fontSize: 12,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                  primaryYAxis: NumericAxis(
+                    numberFormat: NumberFormat.compactCurrency(
+                        symbol: "${Get.find<SystemSettingsController>().generalSettingModel?.data?.currencySymbol}"),
+                    axisLine: const AxisLine(width: 0),
+                    majorTickLines: const MajorTickLines(size: 0),
+                    majorGridLines: const MajorGridLines(
+                      color: AppColors.borderLight,
+                      dashArray: [4, 4],
+                    ),
+                    labelStyle: textRegular.copyWith(
+                      fontSize: 12,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                  legend: const Legend(
+                    isVisible: true,
+                    position: LegendPosition.bottom,
+                    iconHeight: 10,
+                    iconWidth: 10,
+                  ),
+                  series: <CartesianSeries<ChartData, String>>[
+                    StackedColumnSeries<ChartData, String>(
+                      name: "collected".tr,
+                      width: 0.2,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                      dataSource: reportController.collectedData,
+                      xValueMapper: (ChartData data, _) => data.x,
+                      yValueMapper: (ChartData data, _) => data.y,
+                      color: AppColors.accent,
+                      enableTooltip: true,
+                    ),
+                    StackedColumnSeries<ChartData, String>(
+                      name: "outstanding".tr,
+                      width: 0.2,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                      dataSource: reportController.outstandingData,
+                      xValueMapper: (ChartData data, _) => data.x,
+                      yValueMapper: (ChartData data, _) => data.y,
+                      color: AppColors.warning,
+                      enableTooltip: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

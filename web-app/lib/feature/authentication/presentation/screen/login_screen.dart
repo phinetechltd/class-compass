@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:class_compass/api_handle/api_client.dart';
@@ -10,6 +12,7 @@ import 'package:class_compass/feature/authentication/presentation/widgets/animat
 import 'package:class_compass/helper/app_color_helper.dart';
 import 'package:class_compass/helper/responsive_helper.dart';
 import 'package:class_compass/helper/route_helper.dart';
+import 'package:class_compass/feature/sidebar/controller/side_menu_bar_controller.dart';
 import 'package:class_compass/util/app_constants.dart';
 import 'package:class_compass/util/dimensions.dart';
 import 'package:class_compass/util/images.dart';
@@ -40,6 +43,23 @@ class _LoginScreenState extends State<LoginScreen> {
         Get.offAllNamed(RouteHelper.getDashboardRoute());
       });
     }
+
+    // One-click demo login from the SaaS landing page: ?demo=1&token=...
+    if (kIsWeb) {
+      final params = Uri.parse(html.window.location.href).queryParameters;
+      final token = params['token'];
+      if (token != null && token.isNotEmpty && params['demo'] == '1') {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          final ctrl = Get.find<AuthenticationController>();
+          await ctrl.setUserToken(token);
+          final api = Get.find<ApiClient>();
+          api.updateHeader(token, null);
+          final sideMenu = Get.find<SideMenuBarController>();
+          sideMenu.toggleSideMenu(true);
+          Get.offAllNamed(RouteHelper.getDashboardRoute());
+        });
+      }
+    }
   }
 
   @override
@@ -65,6 +85,8 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _demoSelected = i);
     userNameController.text = a.email;
     passwordController.text = a.password;
+    // One-click: attempt login immediately after filling the demo credentials.
+    login(controller);
   }
 
   Widget _demoPanel(AuthenticationController controller) {
@@ -93,7 +115,12 @@ class _LoginScreenState extends State<LoginScreen> {
               label: Text(_demoAccounts[i].label),
               selected: _demoSelected == i,
               selectedColor: primary,
-              labelStyle: textMedium.copyWith(fontSize: 13, color: _demoSelected == i ? Colors.white : null),
+              backgroundColor: Theme.of(context).cardColor,
+              checkmarkColor: Colors.white,
+              side: BorderSide(color: primary.withValues(alpha: 0.6)),
+              // Readable on the dark login card and on the light theme.
+              labelStyle: textMedium.copyWith(fontSize: 13,
+                  color: _demoSelected == i ? Colors.white : Theme.of(context).textTheme.bodyLarge?.color ?? Colors.white),
               onSelected: (_) => _useDemo(i, controller),
             )),
         ]),

@@ -86,55 +86,10 @@ class ParentModuleController extends Controller
 
     public function dashboardData(Request $request)
     {
-        $studentId = (int) get_authenticated_parent_student_id();
-
-        $studentSession = StudentSession::where('student_id', $studentId)->with('class')->first();
-
-        if (! $studentSession) {
+        $data = \App\Services\LearnerOverview::for((int) get_authenticated_parent_student_id());
+        if ($data === null) {
             return $this->responseError([], _lang('Something went wrong. Student not found.'), 404);
         }
-
-        $classId = $studentSession->class_id;
-
-        // Monthly Attendance
-        $monthlyAttendance = StudentAttendance::where('student_id', $studentId)
-            ->where('period_id', 1)
-            ->whereBetween('date', [
-                now()->startOfMonth()->toDateString(),
-                now()->endOfMonth()->toDateString(),
-            ])
-            ->get();
-
-        $monthlyTotal = $monthlyAttendance->count();
-        $monthlyPresent = $monthlyAttendance->where('attendance', '1')->count();
-        $monthlyPercentage = $monthlyTotal > 0 ? round(($monthlyPresent / $monthlyTotal) * 100, 2) : 0;
-
-        // Overall Attendance
-        $allAttendance = StudentAttendance::where('student_id', $studentId)
-            ->where('period_id', 1)
-            ->get();
-
-        $totalAttendance = $allAttendance->count();
-        $totalPresent = $allAttendance->where('attendance', '1')->count();
-        $overallPercentage = $totalAttendance > 0 ? round(($totalPresent / $totalAttendance) * 100, 2) : 0;
-
-        // Pending Assignments (class-wise)
-        $pendingTasks = Assignment::where('class_id', $classId)
-            ->count();
-
-        // Upcoming Exams (class-wise)
-        $upcomingExams = ExamSchedule::where('class_id', $classId)
-            ->where('date', '>=', now()->toDateString())
-            ->count();
-
-        $data = [
-            'attendance' => [
-                'monthly_percentage' => $monthlyPercentage,
-                'overall_percentage' => $overallPercentage,
-            ],
-            'tasks' => $pendingTasks,
-            'upcoming_exams' => $upcomingExams,
-        ];
 
         return $this->responseSuccess($data, 'Child overview data fetch successfully.');
     }

@@ -59,8 +59,8 @@ class _StudentRatioChartWidgetState extends State<ParentFeesOverviewWidget> {
                      VerticalDivider(color: Theme.of(context).hintColor.withValues(alpha: 0.25),thickness: 2,),
                       Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildLegend("${"paid".tr} (${paidPercentage.toStringAsFixed(2)}%)", "$totalPaid", Theme.of(context).colorScheme.primary),
-                          _buildLegend("${"due".tr} (${unpaidPercentage.toStringAsFixed(2)}%)", "$totalUnPaid", Theme.of(context).colorScheme.error),],),
+                          _buildLegend("${"paid".tr} (${(paidPercentage * 100).toStringAsFixed(0)}%)", "$totalPaid", Theme.of(context).colorScheme.primary),
+                          _buildLegend("${"due".tr} (${(unpaidPercentage * 100).toStringAsFixed(0)}%)", "$totalUnPaid", Theme.of(context).colorScheme.error),],),
 
                     ],
                   ),

@@ -19,10 +19,18 @@ class DemoAccounts
             'email' => 'admin@demo.classcompass.co.ke', 'old' => ['superadmin@gmail.com']],
         'accountant' => ['label' => 'Bursar', 'name' => 'Joseph Kiptoo', 'description' => 'Fee collection, M-Pesa payments, invoices and accounts.',
             'email' => 'bursar@demo.classcompass.co.ke', 'old' => ['accountant@gmail.com']],
-        'parent' => ['label' => 'Parent', 'description' => 'Wanjiku\'s parent: attendance, report cards and paying fees.',
+        'parent' => ['label' => 'Parent', 'description' => "Wanjiku's parent: attendance, report cards and paying fees.",
             'email' => 'parent@demo.classcompass.co.ke', 'old' => ['parent@classcompass.test']],
         'learner' => ['label' => 'Learner', 'description' => 'Wanjiku Kamau, Grade 7: timetable, homework and results.',
             'email' => 'learner@demo.classcompass.co.ke', 'old' => ['learner@classcompass.test']],
+        'teacher' => ['label' => 'Teacher', 'name' => 'Mary Wanjiku', 'description' => 'Takes attendance, enters CBC assessments and shares notices with parents.',
+            'email' => 'mary.wanjiku@demo.classcompass.co.ke', 'old' => ['mary.wanjiku@demo.classcompass.co.ke']],
+        'librarian' => ['label' => 'Librarian', 'name' => 'Librarian', 'description' => 'Manages the library catalogue, issues and returns books.',
+            'email' => 'librarian@demo.classcompass.co.ke', 'old' => ['librarian@gmail.com']],
+        'hostel' => ['label' => 'Hostel', 'name' => 'Hostel Warden', 'description' => 'Manages dormitory members, meals and boarding bills.',
+            'email' => 'hostel@demo.classcompass.co.ke', 'old' => ['hostel@gmail.com']],
+        'transport' => ['label' => 'Transport', 'name' => 'Transport Officer', 'description' => 'Manages bus routes, drivers and learner transport assignments.',
+            'email' => 'transport@demo.classcompass.co.ke', 'old' => ['transport@gmail.com']],
     ];
 
     private static ?array $data = null;

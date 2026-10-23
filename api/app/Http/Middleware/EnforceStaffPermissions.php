@@ -59,7 +59,8 @@ class EnforceStaffPermissions
         // Administrator
         ['#^api/(assign-classes|assign-shifts|assign-subjects)(/|$)#', ['administrator.'], ['*']],
         ['#^api/(notices|events)(/|$)#', ['administrator.notice', 'administrator.event'], ['*']],
-        ['#^api/user-logs#', ['administrator.user_activities'], []],
+        // Every staff member reads their own activity (the controller limits non-admins to themselves).
+        ['#^api/user-logs#', ['administrator.user_activities'], ['*']],
 
         // Routine, assignments, syllabus
         ['#^api/(class-routines|exam-routines|assignments|syllabus)(/|$)#', ['routine_management.', 'teacher_panel'], ['*']],
@@ -87,7 +88,8 @@ class EnforceStaffPermissions
         // Master configuration
         ['#^api/(roles|permissions)(/|$)#', ['master_configuration.roles', 'role-'], []],
         ['#^api/users(/|$)#', ['master_configuration.users', 'user-'], []],
-        ['#^api/branches(/|$)#', ['master_configuration.branches'], []],
+        // The branch switcher in the header lists the school's branches for every staff member.
+        ['#^api/branches(/|$)#', ['master_configuration.branches'], ['*']],
         ['#^api/client-licenses#', ['master_configuration.client_licenses'], []],
         ['#^api/(administration-backup-database|drop-database)#', ['master_configuration.database_backup'], []],
         ['#^api/(administration-upload-logo|institute-image-settings|curriculum)#', ['master_configuration.system_settings'], []],

@@ -8,8 +8,6 @@ import 'package:class_compass/common/model/messages.dart';
 import 'package:class_compass/helper/di_container.dart';
 import 'package:class_compass/helper/route_helper.dart';
 import 'package:class_compass/localization/controller/localization_controller.dart';
-import 'package:class_compass/theme/dark_theme.dart';
-import 'package:class_compass/theme/light_theme.dart';
 import 'package:class_compass/util/app_constants.dart';
 import 'package:toastification/toastification.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -56,7 +54,7 @@ class _MyAppState extends State<MyApp> {
             }),
 
           navigatorKey: Get.key,
-          theme: themeController.darkTheme ? darkTheme : lightTheme,
+          theme: themeController.currentTheme,
 
           locale: localizeController.locale,
           translations: Messages(languages: widget.languages),

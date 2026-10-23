@@ -1,3 +1,4 @@
+import 'package:class_compass/helper/app_color_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,7 @@ class SubscriptionWidget extends StatelessWidget {
             Get.toNamed(RouteHelper.getSubscriptionRoute());
           },
             child: Container(padding: const EdgeInsets.all(10),decoration: BoxDecoration(
-              color: Theme.of(context).secondaryHeaderColor,
+              color: systemPrimaryColor(),
             ),
 
               child: Row(spacing: Dimensions.paddingSizeSmall, children: [

@@ -9,6 +9,7 @@ import 'package:class_compass/feature/parent_module/parent_paid_info/controller/
 import 'package:class_compass/feature/parent_module/parent_paid_info/presentation/widgets/parent_fees_overview_widget.dart';
 import 'package:class_compass/feature/parent_module/parent_profile/logic/parent_profile_controller.dart';
 import 'package:class_compass/feature/parent_module/parents/presentation/widget/dashboard_summary.dart';
+import 'package:class_compass/feature/home/widget/quick_access_widget.dart';
 import 'package:class_compass/util/dimensions.dart';
 import 'package:class_compass/util/styles.dart';
 
@@ -46,6 +47,8 @@ class _ParentHomeScreenState extends State<ParentHomeScreen> {
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: Dimensions.paddingSizeDefault, children: [
                 Text("welcome_back".tr, style: textMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge),),
                 Text("here_a_quick".tr, style: textRegular.copyWith(fontSize: Dimensions.fontSizeSmall,color: Theme.of(context).hintColor),),
+
+                const QuickAccessWidget(),
 
                 const DashboardSummarySection(),
 

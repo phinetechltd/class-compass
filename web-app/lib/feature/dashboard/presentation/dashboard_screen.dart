@@ -12,7 +12,6 @@ import 'package:class_compass/feature/dashboard/widget/custom_navbar_widget.dart
 import 'package:class_compass/feature/home/presentation/web_hom_screen.dart';
 import 'package:class_compass/feature/profile/logic/profile_controller.dart';
 import 'package:class_compass/helper/responsive_helper.dart';
-import 'package:class_compass/util/app_constants.dart';
 import 'package:class_compass/util/images.dart';
 
 
@@ -49,17 +48,13 @@ class DashboardScreenState extends State<DashboardScreen> {
             return GetBuilder<ProfileController>(
               builder: (profileController) {
                 String? userType = profileController.profileModel?.data?.role;
-
-                List<NavigationModel> item = [];
-                if(userType?.toLowerCase() == AppConstants.parent.toLowerCase()) {
-                  item = menuController.parentsItem;
-                } else if(userType?.toLowerCase() == AppConstants.studentType.toLowerCase()){
-                  item = menuController.studentsItem;
-                }else {
-                  item = menuController.item;
+                if (userType == null && !ResponsiveHelper.isDesktop(context)) {
+                  return const Scaffold(body: Center(child: CircularProgressIndicator()));
                 }
+
+                final List<NavigationModel> item = menuController.itemsFor(userType, profileController.profileModel?.data?.permissions ?? const []);
                 return Scaffold(resizeToAvoidBottomInset: false,
-                  body: ResponsiveHelper.isDesktop(context)? const WebHomScreen() : PageStorage(bucket: bucket, child: item[menuController.currentTab].screen),
+                  body: ResponsiveHelper.isDesktop(context)? const WebHomScreen() : PageStorage(bucket: bucket, child: item[menuController.currentTab.clamp(0, item.length - 1)].screen),
 
                   bottomNavigationBar: ResponsiveHelper.isDesktop(context)? const SizedBox() :
                   const CustomNavbarWidget(),

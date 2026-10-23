@@ -109,11 +109,34 @@ Tested on 19–20 Oct 2026 against the local stack:
   Example: "Your school's subscription expired on 1 Oct 2026. Renew your plan to continue."
 - **Renewing.** The school picks a plan in the app, which creates a pending upgrade request. The platform admin approves it (`subscription/approve-request/{id}`). The subscription then runs for the plan's duration from the approval date.
 
+## Roles and permissions (October 2026 pass)
+
+Tested by signing in to the web app as each demo role and recording every failed request, then sweeping all 296 API endpoints the app uses as each role.
+
+| Role | Login (demo) | Reaches | Refused (correctly) |
+|---|---|---|---|
+| School admin | `admin@demo…` | everything in the school | parent/learner portal pages, platform pages |
+| Bursar | `bursar@demo…` | fees, M-Pesa, accounting, payroll | gateway keys, library, hostel, transport, staff records |
+| Teacher | `mary.wanjiku@demo…` | learners, attendance, assignments, routines, exams, quizzes, notices | finance, payroll, library, hostel, transport, settings |
+| Librarian / Hostel / Transport | `librarian@demo…` etc. | their own module | everything else |
+| Parent / Learner | `parent@demo…`, `learner@demo…` | their portal only | all staff APIs |
+| Platform admin | your admin email | schools, plans, subscriptions, platform settings | parent/learner portal pages |
+
+No endpoint returned a server error for any role.
+
+Fixes in this pass:
+- **Permission pop-ups on every page load.** Until the user's profile arrived, the app drew the school-admin dashboard, and its widgets asked for data a parent, learner or bursar may not see. The app now waits for the role before drawing any dashboard.
+- **Header lists refused for staff.** The branch switcher and the activity log were refused for the bursar, hostel and transport roles. Every staff member can now read the branch list, and each sees only their own activity (school admins see everyone's). The log used to decide "admin" by a fixed role number that was only right for the first school.
+- **Background refusals no longer show a pop-up.** A refused data load is only logged; a refused action (save, delete) still shows its message.
+- **Mobile bottom bar** hides Fees and Add student from roles without those permissions.
+- **Platform admin** now gets a platform dashboard: schools, active and inactive schools, learners on the platform, new schools this month, subscription revenue by month, and schools per plan. Before, it showed the demo school's figures.
+- **New schools** start with their own name, title, email and phone, Africa/Nairobi time, KSh, the current academic session and their own copyright line. They used to start with the vendor's "Demo Collage", Asia/Dhaka, "$", the 2024 session and "FueDevs LTD". The platform admin's "approve school" path got the same fix. Zoom classes now use the app's time zone instead of Asia/Dhaka.
+
 ## Not done / still needs a decision
 
 - **Subscription payments aren't verified.** A school's plan purchase only creates a pending request, and the platform admin approves it (SaaS admin → upgrade requests) after confirming the money arrived. Automatic activation needs a server-verified M-Pesa/Paystack callback for SaaS payments.
 - **Demo school is over its branch limit.** It is on Shule (1 branch) but has 2 campuses. Both stay usable; adding a third is refused. Move it to Shule Pro if the demo should show multi-campus.
-- **Staff RBAC has no seeded teacher account to test with.** No Teacher user is seeded, so the `teacher_panel` paths (attendance, marks, routines, quizzes) were not swept. Endpoints that no rule covers (e.g. the e-learning `course*` APIs and `teacher/*`) still rely on their controllers' own checks.
+- **Endpoints no rule covers** (e.g. the e-learning `course*` APIs and `teacher/*`) still rely on their controllers' own checks.
 - **The app's "set default language" call uses GET**, but the route has always been POST, so that button returns 405. Change `localization_repository.dart` to `postData` if the feature is used.
 - **Real-money tests.** M-Pesa and Paystack were tested with simulated gateway responses. Run one small live payment with your Daraja sandbox app and your Paystack test keys before launch.
 - **iOS** wasn't built (it needs a Mac). **Windows desktop** needs the Visual Studio C++ tools.

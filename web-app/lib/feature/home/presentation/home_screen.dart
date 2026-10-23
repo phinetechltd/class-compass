@@ -1,3 +1,6 @@
+import 'package:class_compass/util/app_constants.dart';
+import 'package:class_compass/feature/profile/logic/profile_controller.dart';
+import 'package:class_compass/feature/home/widget/saas_dashboard_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:class_compass/common/global_widget/custom_web_scroll_view_widget.dart';
@@ -44,6 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
   ScrollController scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
+    if (Get.find<ProfileController>().userType() == AppConstants.sassAdmin) {
+      return const Scaffold(body: SafeArea(child: SingleChildScrollView(child: SaasDashboardWidget())));
+    }
     return Scaffold(backgroundColor: systemPrimaryColor(),
       body:  RefreshIndicator(onRefresh: () async => loadData(),
         child: BodyWidget(appBar:  const AppBarWidget(showBackButton: false,

@@ -21,9 +21,12 @@ class UserLogsController extends Controller
             ->where('branch_id', get_branch_id())
             ->with('user');
 
-        // 👇 Role Check
-        if (auth()->user()->role_id != 2) {
-            $query->where('user_id', auth()->id());
+        // School admins see everyone's activity; other staff see only their own.
+        $user = auth()->user();
+        $seesAll = in_array($user->user_type, ['Super Admin', 'System Admin'], true)
+            || rescue(fn () => $user->hasPermissionTo('administrator.user_activities'), false, false);
+        if (! $seesAll) {
+            $query->where('user_id', $user->id);
         }
 
         $userLogs = $query->orderBy('created_at', 'desc')

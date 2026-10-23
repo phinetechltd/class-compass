@@ -4,6 +4,7 @@ import 'package:class_compass/common/widget/custom_contaner.dart';
 import 'package:class_compass/feature/administrator/notice/presentation/widgets/notice_list_widget.dart';
 import 'package:class_compass/feature/administrator/notice/presentation/widgets/user_log_widget.dart';
 import 'package:class_compass/feature/administrator/system_settings/controller/system_settngs_controller.dart';
+import 'package:class_compass/feature/home/widget/quick_access_widget.dart';
 import 'package:class_compass/feature/profile/logic/profile_controller.dart';
 import 'package:class_compass/feature/report/logic/dashboard_report_controller.dart';
 import 'package:class_compass/feature/report/presentation/widgets/account_summery.dart';
@@ -16,6 +17,7 @@ import 'package:class_compass/feature/academic_configuration/session/controller/
 import 'package:class_compass/helper/permission_helper.dart';
 import 'package:class_compass/helper/responsive_helper.dart';
 import 'package:class_compass/util/dimensions.dart';
+import 'package:class_compass/util/styles.dart';
 
 class WebReportScreen extends StatefulWidget {
   final ScrollController scrollController;
@@ -42,48 +44,106 @@ class _WebReportScreenState extends State<WebReportScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return  Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
+    final bool isDesktop = ResponsiveHelper.isDesktop(context);
+    const double hPad = 20;
 
-      const Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-        child: DashboardHeadingSectionWidget(),
-      ),
-      const Padding(
-        padding: EdgeInsets.symmetric( horizontal: Dimensions.paddingSizeDefault),
-        child: SummeryNumberWidget(),
-      ),
-       ResponsiveHelper.isDesktop(context)?
-      const Row(spacing: Dimensions.paddingSizeDefault, children: [
-        Expanded(child: Padding(padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
-          child: CustomContainer(child: AttendanceSummaryReportWidget()))),
+    return Container(
+      color: AppColors.backgroundColor,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
 
-        Padding(padding: EdgeInsets.fromLTRB(0, Dimensions.paddingSizeDefault, Dimensions.paddingSizeDefault, Dimensions.paddingSizeDefault),
-          child: CustomContainer(child: StudentRatioChartWidget())),
-      ],):const Column(spacing: Dimensions.paddingSizeDefault, children: [
-         Padding(padding: EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-             child: CustomContainer(child: AttendanceSummaryReportWidget())),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(hPad, hPad, hPad, 0),
+          child: DashboardHeadingSectionWidget(),
+        ),
+        const SizedBox(height: 16),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: hPad),
+          child: SummeryNumberWidget(),
+        ),
+        const SizedBox(height: 20),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: hPad),
+          child: QuickAccessWidget(),
+        ),
+        const SizedBox(height: 20),
 
-         Padding(padding: EdgeInsets.symmetric(vertical: Dimensions.paddingSizeDefault),
-             child: CustomContainer(child: StudentRatioChartWidget())),
-       ],),
+        if (isDesktop)
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: hPad),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(flex: 3,
+                child: CustomContainer(
+                  borderRadius: AppBorderRadius.xl,
+                  horizontalPadding: 0, verticalPadding: 0,
+                  child: AttendanceSummaryReportWidget(),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(flex: 2,
+                child: CustomContainer(
+                  borderRadius: AppBorderRadius.xl,
+                  horizontalPadding: 0, verticalPadding: 0,
+                  child: StudentRatioChartWidget(),
+                ),
+              ),
+            ]),
+          )
+        else
+          const Column(children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: hPad),
+              child: CustomContainer(
+                borderRadius: AppBorderRadius.xl,
+                horizontalPadding: 0, verticalPadding: 0,
+                child: AttendanceSummaryReportWidget(),
+              ),
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: hPad),
+              child: CustomContainer(
+                borderRadius: AppBorderRadius.xl,
+                horizontalPadding: 0, verticalPadding: 0,
+                child: StudentRatioChartWidget(),
+              ),
+            ),
+          ]),
 
-      if(PermissionHelper.hasPermission("fees_management.startup"))
-      const Padding(padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-        child: CustomContainer(child: FeesCollectionOverviewWidget()),
-      ),
-      if(Get.find<ProfileController>().hasPermission("accounting_report.income_statement"))
-      const Padding(padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
-        child: CustomContainer(child: DashboardAccountChartWidget())),
+        if (PermissionHelper.hasPermission("fees_management.startup")) ...[
+          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: hPad),
+            child: CustomContainer(
+              borderRadius: AppBorderRadius.xl,
+              horizontalPadding: 0, verticalPadding: 0,
+              child: FeesCollectionOverviewWidget(),
+            ),
+          ),
+        ],
 
-      // const DashboardCalenderSection(),
+        if (Get.find<ProfileController>().hasPermission("accounting_report.income_statement")) ...[
+          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: hPad),
+            child: CustomContainer(
+              borderRadius: AppBorderRadius.xl,
+              horizontalPadding: 0, verticalPadding: 0,
+              child: DashboardAccountChartWidget(),
+            ),
+          ),
+        ],
 
+        // const DashboardCalenderSection(),
 
+        const SizedBox(height: 28),
+        NoticeListWidget(scrollController: widget.scrollController, dashBoardScreen: true),
 
-      const SizedBox(height: Dimensions.paddingSizeDefault,),
-      NoticeListWidget(scrollController: widget.scrollController, dashBoardScreen: true),
+        const SizedBox(height: Dimensions.paddingSizeDefault),
+        UserLogListWidget(dashBoardScreen: true,
+            scrollController: widget.scrollController),
 
-     const SizedBox(height: Dimensions.paddingSizeDefault),
-     UserLogListWidget(dashBoardScreen: true,
-         scrollController: widget.scrollController),
-    ],);
+        const SizedBox(height: 24),
+      ]),
+    );
   }
 }
