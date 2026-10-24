@@ -57,6 +57,39 @@
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:locale" content="en_KE">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="alternate" hreflang="en-KE" href="{{ url('/') }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ $app }} blog" href="{{ route('blog.feed') }}">
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'Organization',
+                '@id' => url('/').'#organization',
+                'name' => $app,
+                'url' => url('/'),
+                'logo' => $asset('logo.png'),
+                'email' => $contact['email'] ?? null,
+                'areaServed' => 'KE',
+                'address' => ['@type' => 'PostalAddress', 'addressLocality' => 'Nairobi', 'addressCountry' => 'KE'],
+                'contactPoint' => array_filter(['@type' => 'ContactPoint', 'contactType' => 'customer support', 'email' => $contact['email'] ?? null, 'telephone' => $contact['phone'] ?? null, 'areaServed' => 'KE', 'availableLanguage' => ['en', 'sw']]),
+            ],
+            [
+                '@type' => 'WebSite',
+                '@id' => url('/').'#website',
+                'url' => url('/'),
+                'name' => $app,
+                'inLanguage' => 'en-KE',
+                'publisher' => ['@id' => url('/').'#organization'],
+            ],
+            [
+                '@type' => 'FAQPage',
+                'mainEntity' => collect($faqs)->map(fn ($f) => ['@type' => 'Question', 'name' => $f[0], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => strip_tags($f[1])]])->values(),
+            ],
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
+    </script>
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ $asset('apple-touch-icon.png') }}">
     <script type="application/ld+json">
@@ -68,6 +101,11 @@
         'operatingSystem' => 'Web, Android, Windows',
         'areaServed' => 'KE',
         'description' => 'School management system for Kenyan schools with CBC assessments and M-Pesa fee collection.',
+        'url' => url('/'),
+        'image' => $asset('screens/admin-dashboard.jpg'),
+        'screenshot' => [$asset('screens/admin-dashboard.jpg'), $asset('screens/mpesa-flow.png'), $asset('screens/parent-flow.png')],
+        'inLanguage' => 'en-KE',
+        'publisher' => ['@id' => url('/').'#organization'],
         'offers' => collect($plans)->whereNotNull('price')->map(fn ($p) => ['@type' => 'Offer', 'name' => $p['name'], 'price' => $p['price'], 'priceCurrency' => 'KES', 'description' => 'Per term. '.$p['learners']])->values(),
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
     </script>

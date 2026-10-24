@@ -37,15 +37,27 @@ Route::middleware('signed')->group(function () {
 });
 
 // Sitemap for the product site (school sites are served by the web app).
+// Includes last-modified dates and the main image of each page (Google image sitemap extension).
 Route::get('/sitemap.xml', function () {
+    $posts = \App\Support\Blog::all();
+    $landing = resource_path('views/saas-landing-page.blade.php');
+    $homeModified = max(filemtime($landing), $posts->max(fn ($p) => $p['date']->timestamp) ?? 0);
+    $img = fn (string $path, string $title) => '<image:image><image:loc>'.e(asset('assets/classcompass/'.$path)).'</image:loc><image:title>'.e($title).'</image:title></image:image>';
+    $url = fn (string $loc, string $lastmod, string $freq, string $priority, string $images = '') => '<url><loc>'.e($loc).'</loc><lastmod>'.$lastmod.'</lastmod>'
+        .'<changefreq>'.$freq.'</changefreq><priority>'.$priority.'</priority>'.$images.'</url>';
+
     $xml = '<?xml version="1.0" encoding="UTF-8"?>'
-        .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-        .'<url><loc>'.e(url('/')).'</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>'
-        .'<url><loc>'.e(route('blog.index')).'</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>'
-        .\App\Support\Blog::all()->map(fn ($p) => '<url><loc>'.e(route('blog.show', $p['slug'])).'</loc><lastmod>'.$p['date']->toDateString().'</lastmod><priority>0.7</priority></url>')->implode('')
+        .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
+        .$url(url('/'), date('Y-m-d', $homeModified), 'weekly', '1.0',
+            $img('screens/admin-dashboard.jpg', 'Class Compass school dashboard')
+            .$img('screens/mpesa-flow.png', 'Paying school fees with M-Pesa in Class Compass')
+            .$img('screens/parent-flow.png', 'Class Compass parent portal'))
+        .$url(route('blog.index'), $posts->isNotEmpty() ? $posts->first()['date']->toDateString() : date('Y-m-d', $homeModified), 'weekly', '0.8')
+        .$posts->map(fn ($p) => $url(route('blog.show', $p['slug']), date('Y-m-d', max($p['date']->timestamp, $p['updated'] ?? 0)), 'monthly', '0.7',
+            $p['cover'] ? $img($p['cover'], $p['title']) : ''))->implode('')
         .'</urlset>';
 
-    return response($xml, 200, ['Content-Type' => 'application/xml']);
+    return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
 })->name('sitemap');
 
 // Blog for the product website (posts are Markdown files in resources/blog).

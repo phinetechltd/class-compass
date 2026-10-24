@@ -15,7 +15,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $pageTitle }} | {{ $app }}</title>
     <meta name="description" content="{{ $pageDescription }}">
+    <meta name="robots" content="@yield('robots', 'index, follow, max-image-preview:large, max-snippet:-1')">
     <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="alternate" hreflang="en-KE" href="{{ url()->current() }}">
     <meta property="og:site_name" content="{{ $app }}">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:title" content="{{ $pageTitle }}">

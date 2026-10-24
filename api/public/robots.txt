@@ -1,7 +1,10 @@
+# Class Compass product website: https://classcompass.co.ke
 User-agent: *
+Allow: /
 Disallow: /api/
 Disallow: /install
 Disallow: /payment/
+Disallow: /saas-landing-page
+Disallow: /*print*
 
-# Replace with your domain when you deploy:
-# Sitemap: https://classcompass.co.ke/sitemap.xml
+Sitemap: https://classcompass.co.ke/sitemap.xml

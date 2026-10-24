@@ -69,6 +69,7 @@ class Blog
             'title' => $meta['title'],
             'slug' => $meta['slug'] ?? Str::slug(pathinfo($file, PATHINFO_FILENAME)),
             'date' => Carbon::parse($meta['date']),
+            'updated' => filemtime($file),
             'excerpt' => $meta['excerpt'] ?? Str::limit(strip_tags(Str::markdown($body)), 180),
             'cover' => $meta['cover'] ?? null,
             'tags' => array_values(array_filter(array_map('trim', explode(',', $meta['tags'] ?? '')))),

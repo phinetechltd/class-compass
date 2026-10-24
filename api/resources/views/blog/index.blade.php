@@ -1,6 +1,13 @@
 @extends('blog.layout')
 
 @section('title', $tag ? 'Posts about '.$tag : 'Blog: guides for Kenyan schools')
+@if ($tag)
+    @section('robots', 'noindex, follow')
+@endif
+@push('head')
+    <script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Blog', 'name' => config('app.name').' blog', 'url' => route('blog.index'), 'inLanguage' => 'en-KE',
+        'blogPost' => $posts->take(10)->map(fn ($p) => ['@type' => 'BlogPosting', 'headline' => $p['title'], 'url' => route('blog.show', $p['slug']), 'datePublished' => $p['date']->toDateString()])->values()], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endpush
 @section('description', 'Practical guides for head teachers, bursars and school owners in Kenya: CBC assessment, school fees and M-Pesa, parent communication, admissions marketing and running a school with Class Compass.')
 
 @section('styles')

@@ -19,7 +19,15 @@
         'publisher' => ['@type' => 'Organization', 'name' => config('app.name'), 'logo' => ['@type' => 'ImageObject', 'url' => asset('assets/classcompass/logo.png')]],
         'image' => $post['cover'] ? asset('assets/classcompass/'.$post['cover']) : null,
         'mainEntityOfPage' => url()->current(),
+        'dateModified' => date('Y-m-d', max($post['date']->timestamp, $post['updated'] ?? 0)),
+        'keywords' => implode(', ', $post['tags']),
+        'inLanguage' => 'en-KE',
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+    <script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => config('app.name'), 'item' => url('/')],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Blog', 'item' => route('blog.index')],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => $post['title'], 'item' => url()->current()],
+    ]], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 @endpush
 
 @section('styles')
