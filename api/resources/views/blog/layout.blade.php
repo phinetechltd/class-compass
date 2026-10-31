@@ -49,6 +49,10 @@
         .nav-links a{text-decoration:none;color:var(--text)}.nav-links a:hover,.nav-links a.on{color:var(--blue)}
         .nav .login{font-weight:700;text-decoration:none;color:var(--navy)}
         @media (max-width:860px){.nav-links{display:none}.nav .login{margin-left:auto}}
+        .nav .login,.btn{white-space:nowrap}
+        @media (max-width:560px){.nav .wrap{gap:12px;height:64px}.nav img{height:34px}.nav .login{font-size:14px}.nav .btn{padding:9px 13px;font-size:13px;border-radius:10px}
+            .cta{padding:26px 22px}.cta h3{font-size:21px}}
+        body{overflow-x:hidden}
         .eyebrow{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
         .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--navy);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:3px 10px;margin:0 6px 6px 0;text-decoration:none}
         .meta{font-size:14px;color:var(--muted)}
