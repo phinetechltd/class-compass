@@ -155,12 +155,9 @@ class APIQuickCollectionController extends Controller
         $instituteId = get_institute_id();
         $branchId = get_branch_id();
 
-        // Get active session
-        $session = StudentSession::where([
-            'institute_id' => $instituteId,
-            'branch_id' => $branchId,
-            'student_id' => $id,
-        ])->first();
+        // The learner's enrolment found above (re-querying by the user's current branch fails when an
+        // admin is working in another campus).
+        $session = $studentSession;
 
         // Load all fees with fee heads
         $amountConfig = Fee::with('feeHead')
