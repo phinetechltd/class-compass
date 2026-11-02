@@ -43,7 +43,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
         actions: [actionWidget??const SizedBox()],
 
-        leadingWidth: showBackButton ? 50 : 100,
+        leadingWidth: showBackButton ? 50 : 160,
         leading: showBackButton ?
         IconButton(icon: const Icon(Icons.arrow_back),
           color: Get.isDarkMode ? Colors.white.withValues(alpha:0.8) : Colors.white,

@@ -40,7 +40,7 @@ class ProfileInfo {
 
   ProfileInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
+    name = json['name'] ?? [json['first_name'], json['last_name']].where((p) => p != null && '$p'.isNotEmpty).join(' ');
     username = json['username'];
     phone = json['phone'];
     email = json['email'];

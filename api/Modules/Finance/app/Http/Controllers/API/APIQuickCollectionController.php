@@ -145,7 +145,8 @@ class APIQuickCollectionController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $studentSession = $this->studentSessionService->findStudentSessionById($id);
+        // $id is the learner's id (the rest of this method and the app's fee screen use it that way).
+        $studentSession = StudentSession::where('student_id', $id)->orderByDesc('id')->first();
 
         if (! $studentSession) {
             return $this->responseError([], 'Student not found.', 404);

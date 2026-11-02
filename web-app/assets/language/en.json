@@ -1382,5 +1382,7 @@
   "callback_base_url_optional": "Public API URL for callbacks (optional)",
   "test_connection": "Test connection",
   "testing": "Testing…",
-  "complete_payment_in_browser": "Complete the payment in your browser, then come back to this screen."
+  "complete_payment_in_browser": "Complete the payment in your browser, then come back to this screen.",
+  "core_competencies": "Core competencies",
+  "optional": "Optional"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:class_compass/common/widget/custom_contaner.dart';
+import 'package:class_compass/feature/branch/controller/branch_controller.dart';
 import 'package:class_compass/feature/academic_configuration/session/controller/session_controller.dart';
 import 'package:class_compass/feature/home/widget/update_branch_and_session_widget.dart';
 import 'package:class_compass/feature/parent_module/parent_home/widget/appbar_header_widget_home_page.dart';
@@ -25,8 +26,11 @@ class BranchSessionSelectionWidget extends StatelessWidget {
               child: CustomContainer(onTap: ()=> Get.bottomSheet(const UpdateBranchAndSessionWidget()),
                 color: Theme.of(context).cardColor.withValues(alpha: .1), verticalPadding: Dimensions.paddingSizeExtraSmall,
                 showShadow: false, border: Border.all(color: Theme.of(context).cardColor, width: .5), borderRadius: Dimensions.paddingSizeExtraSmall,
-                child: Text("${profileController.currentBranch??'Current Branch..'} | ${sessionController.sessionName ?? "Current Session.."}", style: textRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Colors.white),
-                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                // Show the branch's name (e.g. "Main Campus"), not its number.
+                child: GetBuilder<BranchController>(builder: (branchController) => Text(
+                    "${branchController.branchName ?? 'Branch'} | ${sessionController.sessionName ?? 'Session'}",
+                    style: textRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Colors.white),
+                    maxLines: 1, overflow: TextOverflow.ellipsis)),
               ),
             );
           }

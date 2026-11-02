@@ -16,12 +16,56 @@ use InvalidArgumentException;
  */
 class CurriculumService
 {
+    /**
+     * Senior School (Grade 10 – 12) pathways and tracks, from the KICD Basic Education Curriculum
+     * Framework data pack. 'core' = compulsory within the track; 'electives' = the learner's choice
+     * under 'rule'. Names are kept within the 40-character subject name limit.
+     */
+    public const SENIOR_TRACKS = [
+        'STEM: Pure Sciences' => ['pathway' => 'STEM', 'core' => ['ICT'],
+            'electives' => ['Mathematics', 'Physics', 'Chemistry', 'Biology'], 'rule' => 'At least 3 of the 4 sciences and mathematics'],
+        'STEM: Applied Sciences' => ['pathway' => 'STEM', 'core' => ['ICT'],
+            'electives' => ['Agriculture', 'Computer Science', 'Foods and Nutrition', 'Home Management'], 'rule' => 'One applied science'],
+        'STEM: Technical & Engineering' => ['pathway' => 'STEM', 'core' => ['ICT', 'Physics / Physical Sciences', 'Chemistry / Biological Sciences'],
+            'electives' => ['Agricultural Technology', 'Geosciences Technology', 'Marine and Fisheries Technology', 'Aviation Technology', 'Wood Technology',
+                'Electrical Technology', 'Metal Technology', 'Power Mechanics', 'Clothing Technology', 'Construction Technology', 'Media Technology',
+                'Electronics Technology', 'Manufacturing Technology', 'Mechatronics'], 'rule' => 'One technology subject'],
+        'STEM: Career & Technology Studies' => ['pathway' => 'STEM', 'core' => ['ICT'],
+            'electives' => ['Garment Making and Interior Design', 'Leather Work', 'Culinary Arts', 'Hair Dressing and Beauty Therapy', 'Plumbing and Ceramics',
+                'Welding and Fabrication', 'Tourism and Travel', 'Air Conditioning and Refrigeration', 'Animal Keeping', 'Exterior Design and Landscaping',
+                'Building Construction', 'Photography', 'Graphic Designing and Animation', 'Food and Beverage', 'Motor Vehicle Mechanics', 'Carpentry and Joinery',
+                'Fire Fighting', 'Metalwork', 'Electricity', 'Land Surveying', 'Science Laboratory Technology', 'Electronics', 'Printing Technology', 'Crop Production'],
+            'rule' => 'One vocational subject'],
+        'Social Sciences: Languages' => ['pathway' => 'Social Sciences', 'core' => [],
+            'electives' => ['Literature in English', 'Fasihi ya Kiswahili', 'Kenyan Sign Language', 'Indigenous Languages', 'Arabic', 'French', 'German', 'Mandarin'],
+            'rule' => '3 to 5 subjects across the Social Sciences pathway'],
+        'Social Sciences: Humanities' => ['pathway' => 'Social Sciences', 'core' => [],
+            'electives' => ['History and Citizenship', 'Geography', 'Christian Religious Education', 'Islamic Religious Education', 'Hindu Religious Education'],
+            'rule' => '3 to 5 subjects across the Social Sciences pathway'],
+        'Social Sciences: Business Studies' => ['pathway' => 'Social Sciences', 'core' => [],
+            'electives' => ['Business Studies'], 'rule' => 'Within the 3 to 5 Social Sciences subjects'],
+        'Arts & Sports: Performing Arts' => ['pathway' => 'Arts & Sports Science', 'core' => ['Legal and Ethical Issues in Arts', 'Communication Skills'],
+            'electives' => ['Music', 'Dance', 'Theatre and Elocution'], 'rule' => 'One performing art'],
+        'Arts & Sports: Visual & Applied Arts' => ['pathway' => 'Arts & Sports Science', 'core' => ['Legal and Ethical Issues in Arts', 'Communication Skills'],
+            'electives' => ['Fine Art', 'Applied Art', 'Time-Based Media', 'Crafts'], 'rule' => 'One visual or applied art'],
+        'Arts & Sports: Sports Science' => ['pathway' => 'Arts & Sports Science', 'core' => ['Human Physiology, Anatomy and Nutrition', 'Sports Ethics'],
+            'electives' => ['Ball Games', 'Athletics', 'Indoor Games', 'Gymnastics', 'Water Sports', 'Boxing', 'Martial Arts', 'Outdoor Pursuits', 'Advanced Physical Education'],
+            'rule' => 'One or two sports'],
+    ];
+
+    /** The seven core competencies of the Basic Education Curriculum Framework. */
+    public const CORE_COMPETENCIES = [
+        'Communication and Collaboration', 'Self-efficacy', 'Critical Thinking and Problem Solving', 'Creativity and Imagination',
+        'Citizenship', 'Digital Literacy', 'Learning to Learn',
+    ];
+
     public function presets(): array
     {
         return [
             'cbc' => [
                 'name' => 'CBC (Competency Based Curriculum)',
-                'description' => 'Kenya CBC/CBE: Pre-Primary (PP1–PP2) and Primary (Grade 1–6) graded on the 4-level rubric (EE, ME, AE, BE); Junior School (Grade 7–9) and Senior School (Grade 10–12) on the KNEC 8-level scale (EE1–BE2). Senior School has core subjects plus electives in the STEM, Social Sciences and Arts & Sports Science pathways.',
+                'description' => 'Kenya CBC/CBE: Pre-Primary (PP1–PP2) and Primary (Grade 1–6) graded on the 4-level rubric (EE, ME, AE, BE); Junior School (Grade 7–9) and Senior School (Grade 10–12) on the KNEC 8-level scale (EE1–BE2). Senior School is set up with the 10 tracks of the STEM, Social Sciences and Arts & Sports Science pathways as learner groups.',
+                'competencies' => self::CORE_COMPETENCIES,
                 'levels' => [
                     'Pre-Primary' => [
                         'classes' => ['PP1', 'PP2'],
@@ -36,29 +80,21 @@ class CurriculumService
                     'Upper Primary' => [
                         'classes' => ['Grade 4', 'Grade 5', 'Grade 6'],
                         'subjects' => ['English', 'Kiswahili', 'Mathematics', 'Science & Technology', 'Social Studies', 'Agriculture & Nutrition', 'Creative Arts', 'Religious Education'],
+                        'optional' => ['Kenyan Sign Language', 'Foreign Language'],
                         'grades' => 'rubric4',
                     ],
                     'Junior School' => [
                         'classes' => ['Grade 7', 'Grade 8', 'Grade 9'],
                         'subjects' => ['English', 'Kiswahili', 'Mathematics', 'Integrated Science', 'Social Studies', 'Pre-Technical Studies', 'Agriculture & Nutrition', 'Creative Arts & Sports', 'Religious Education'],
+                        'optional' => ['Kenyan Sign Language', 'Foreign Language', 'Indigenous Languages', 'Computer Science'],
                     ],
                     'Senior School' => [
                         'classes' => ['Grade 10', 'Grade 11', 'Grade 12'],
-                        // Core subjects, then the electives of all three pathways (learners take three electives).
-                        'subjects' => ['English', 'Kiswahili', 'Core Mathematics', 'Essential Mathematics', 'Community Service Learning', 'Physical Education',
-                            'Biology', 'Chemistry', 'Physics', 'General Science', 'Agriculture', 'Computer Studies', 'Home Science',
-                            'Building & Construction', 'Electricity', 'Metalwork', 'Woodwork', 'Power Mechanics', 'Aviation', 'Media Technology', 'Marine & Fisheries',
-                            'History & Citizenship', 'Geography', 'Christian Religious Education', 'Islamic Religious Education', 'Hindu Religious Education', 'Business Studies',
-                            'Literature in English', 'Fasihi ya Kiswahili', 'Kenyan Sign Language', 'French', 'German', 'Arabic', 'Mandarin Chinese', 'Indigenous Language',
-                            'Music & Dance', 'Theatre & Film', 'Fine Arts', 'Sports & Recreation'],
-                        'pathways' => [
-                            'Core' => ['English', 'Kiswahili', 'Core Mathematics or Essential Mathematics', 'Community Service Learning', 'Physical Education'],
-                            'STEM' => ['Biology', 'Chemistry', 'Physics', 'General Science', 'Agriculture', 'Computer Studies', 'Home Science', 'Building & Construction',
-                                'Electricity', 'Metalwork', 'Woodwork', 'Power Mechanics', 'Aviation', 'Media Technology', 'Marine & Fisheries'],
-                            'Social Sciences' => ['History & Citizenship', 'Geography', 'CRE / IRE / HRE', 'Business Studies', 'Literature in English', 'Fasihi ya Kiswahili',
-                                'Kenyan Sign Language', 'French', 'German', 'Arabic', 'Mandarin Chinese', 'Indigenous Language'],
-                            'Arts & Sports Science' => ['Music & Dance', 'Theatre & Film', 'Fine Arts', 'Sports & Recreation'],
-                        ],
+                        // Core subjects for every learner; each track below adds its own core and electives.
+                        'subjects' => ['English', 'Kiswahili', 'Core Mathematics', 'Essential Mathematics', 'Community Service Learning', 'Physical Education'],
+                        // Pathways and tracks from the KICD Basic Education Curriculum Framework. Each track becomes a
+                        // learner group; its electives are linked to that group. Selection rules are shown to schools.
+                        'tracks' => self::SENIOR_TRACKS,
                     ],
                 ],
                 'scales' => [
@@ -178,10 +214,13 @@ class CurriculumService
                 'name' => $name,
                 'classes' => $l['classes'],
                 'subjects' => $l['subjects'],
-                'pathways' => $l['pathways'] ?? null,
+                'optional' => $l['optional'] ?? null,
+                'pathways' => isset($l['tracks']) ? ['Core (all learners)' => $l['subjects']] + collect($l['tracks'])->map(fn ($t) => array_merge(
+                    array_map(fn ($c) => $c.' (core)', $t['core']), $t['electives'], ['Rule: '.$t['rule']]))->all() : null,
                 'grading' => collect($this->scaleFor($p, $l))->pluck(0)->implode(', '),
             ], fn ($v) => $v !== null))->values(),
             'grades' => collect($p['grades'])->map(fn ($g) => ['grade' => $g[0], 'from' => $g[1], 'to' => $g[2], 'points' => $g[3], 'remark' => $g[4]]),
+            'competencies' => $p['competencies'] ?? [],
         ])->values()->all();
     }
 
@@ -214,9 +253,34 @@ class CurriculumService
                         }
 
                         if ($subjects && $classId) {
-                            foreach ($level['subjects'] as $i => $subjectName) {
-                                $exists = DB::table('subjects')->where($scope)->where('class_id', $classId)->where('subject_name', $subjectName)->whereNull('deleted_at')->exists();
-                                if ($exists) {
+                            // [name, type, form, group]
+                            $list = array_map(fn ($n) => [$n, 'Compulsory', 'All Groups', null], $level['subjects']);
+                            foreach ($level['optional'] ?? [] as $n) {
+                                $list[] = [$n, 'Optional', 'Optional', null];
+                            }
+                            foreach ($level['tracks'] ?? [] as $track => $t) {
+                                $groupId = DB::table('student_groups')->where($scope)->where('group_name', $track)->value('id')
+                                    ?? DB::table('student_groups')->insertGetId($scope + ['group_name' => $track, 'created_at' => $now, 'updated_at' => $now]);
+                                foreach ($t['core'] as $n) {
+                                    $list[] = [$n, 'Compulsory', 'Compulsory', $groupId];
+                                }
+                                foreach ($t['electives'] as $n) {
+                                    $list[] = [$n, 'Optional', 'Elective', $groupId];
+                                }
+                            }
+                            foreach ($list as $i => [$subjectName, $type, $form, $groupId]) {
+                                $existing = DB::table('subjects')->where($scope)->where('class_id', $classId)->where('subject_name', $subjectName)->whereNull('deleted_at')->first();
+                                if ($existing) {
+                                    // Fill in what an older set-up left empty; never overwrite a school's own choices.
+                                    $fill = array_filter([
+                                        'subject_type' => $existing->subject_type ? null : $type,
+                                        'subject_type_form' => $existing->subject_type_form ? null : $form,
+                                        'group_id' => $existing->group_id || ! $groupId ? null : $groupId,
+                                    ]);
+                                    if ($fill) {
+                                        DB::table('subjects')->where('id', $existing->id)->update($fill + ['updated_at' => $now]);
+                                    }
+
                                     continue;
                                 }
                                 DB::table('subjects')->insert($scope + [
@@ -224,6 +288,9 @@ class CurriculumService
                                     'subject_name' => $subjectName,
                                     'subject_code' => $this->subjectCode($subjectName, $className),
                                     'subject_short_form' => $this->shortForm($subjectName),
+                                    'subject_type' => $type,
+                                    'subject_type_form' => $form,
+                                    'group_id' => $groupId,
                                     'sl_no' => $i + 1,
                                     'full_mark' => 100,
                                     'pass_mark' => $key === 'college' ? 50 : 40,

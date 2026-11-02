@@ -42,17 +42,23 @@ class SummeryNumberWidget extends StatelessWidget {
           ),
         ];
 
-        final isDesktop = ResponsiveHelper.isDesktop(context);
-
-        return GridView.count(
-          crossAxisCount: isDesktop ? 4 : 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: isDesktop ? 1.75 : 1.2,
-          children: cards.map((card) => _KpiCard(data: card)).toList(),
-        );
+        // Columns follow the space available (tablets get one row of four) and every card keeps
+        // a fixed height, so cards never stretch into tall blocks.
+        return LayoutBuilder(builder: (context, box) {
+          final cols = box.maxWidth >= 680 ? 4 : 2;
+          const spacing = 16.0;
+          final cardWidth = (box.maxWidth - spacing * (cols - 1)) / cols;
+          final cardHeight = ResponsiveHelper.isDesktop(context) ? 150.0 : 132.0;
+          return GridView.count(
+            crossAxisCount: cols,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: spacing,
+            crossAxisSpacing: spacing,
+            childAspectRatio: cardWidth / cardHeight,
+            children: cards.map((card) => _KpiCard(data: card)).toList(),
+          );
+        });
       },
     );
   }

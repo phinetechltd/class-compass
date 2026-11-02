@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:ui';
 
@@ -62,8 +63,12 @@ class _MyAppState extends State<MyApp> {
           fallbackLocale: Locale(
             AppConstants.languages[0].languageCode, AppConstants.languages[0].countryCode),
 
-          initialRoute: RouteHelper.getInitialRoute(),
+          // On the web, open the page in the address bar (bookmarks, shared links, /sign-in, /dashboard).
+          initialRoute: kIsWeb && Uri.base.path.length > 1
+              ? Uri.base.path + (Uri.base.hasQuery ? '?${Uri.base.query}' : '')
+              : RouteHelper.getInitialRoute(),
           getPages: RouteHelper.routes,
+          unknownRoute: RouteHelper.routes.first,
 
           defaultTransition: GetPlatform.isMobile ? Transition.cupertino
               : Transition.noTransition,

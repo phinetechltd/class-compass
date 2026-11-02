@@ -12,6 +12,7 @@ import 'package:class_compass/feature/dashboard/widget/custom_navbar_widget.dart
 import 'package:class_compass/feature/home/presentation/web_hom_screen.dart';
 import 'package:class_compass/feature/profile/logic/profile_controller.dart';
 import 'package:class_compass/helper/responsive_helper.dart';
+import 'package:class_compass/helper/route_helper.dart';
 import 'package:class_compass/util/images.dart';
 
 
@@ -29,6 +30,10 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void initState() {
+    // Opened by link without being signed in: go to sign-in first.
+    if (!Get.find<AuthenticationController>().isLoggedIn()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => Get.offAllNamed(RouteHelper.getSignInRoute()));
+    }
     Get.find<DashboardController>().setTabIndex(0);
     if(Get.find<ProfileController>().profileModel == null) {
       Get.find<ProfileController>().getProfileInfo();

@@ -4,14 +4,15 @@ import 'package:get/get.dart';
 import 'package:class_compass/api_handle/error_response.dart';
 import 'package:class_compass/common/widget/custom_snackbar.dart';
 import 'package:class_compass/feature/authentication/logic/authentication_controller.dart';
-import 'package:class_compass/feature/authentication/presentation/screen/login_screen.dart';
+import 'package:class_compass/helper/route_helper.dart';
 
 
 class ApiChecker {
   static void checkApi(Response response) {
     if(response.statusCode == 401) {
       Get.find<AuthenticationController>().clearSharedData();
-      Get.offAll(()=> const LoginScreen());
+      // Named route keeps a readable address (/sign-in) on the web.
+      Get.offAllNamed(RouteHelper.getSignInRoute());
     }else if(response.statusCode == 403){
       // A screen loading data the user's role may not see (a dashboard widget, a header list)
       // should not interrupt them; only a refused action they took (save, delete...) is shown.

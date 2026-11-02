@@ -1,3 +1,4 @@
+import 'package:class_compass/feature/branch/controller/branch_controller.dart';
 import 'package:class_compass/util/app_constants.dart';
 import 'package:class_compass/feature/profile/logic/profile_controller.dart';
 import 'package:class_compass/feature/home/widget/saas_dashboard_widget.dart';
@@ -29,6 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> loadData() async{
     if(Get.find<SessionController>().sessionModel == null){
       Get.find<SessionController>().getSessionList(1);
+    }
+    // The header shows the branch's name, which comes from the branch list.
+    if(Get.find<BranchController>().branchModel == null){
+      Get.find<BranchController>().getBranchList(1);
     }
     if(Get.find<DashboardReportController>().dashboardReportModel == null){
       Get.find<DashboardReportController>().getDashboardData();

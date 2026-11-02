@@ -30,6 +30,8 @@ trait Trackable
             $userLog->url = $url;
             $userLog->model_id = $model_id;
             $userLog->save();
+            // The AuditTrail middleware skips requests a controller has already recorded.
+            request()->attributes->set('audited', true);
         } catch (\Throwable $th) {
             //
         }

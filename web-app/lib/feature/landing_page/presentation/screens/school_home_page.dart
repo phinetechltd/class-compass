@@ -272,7 +272,7 @@ class _SchoolHomePageState extends State<SchoolHomePage> {
           padding: EdgeInsets.fromLTRB(0, mobile ? 56 : 0, 0, mobile ? 56 : 90),
           child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 1200), child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: mobile ? text : Row(children: [
+            child: mobile || tablet ? text : Row(children: [
               Expanded(flex: 7, child: text),
               Expanded(flex: 5, child: Align(alignment: Alignment.bottomRight, child: Padding(padding: const EdgeInsets.only(top: 260), child: floating))),
             ]),

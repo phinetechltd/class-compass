@@ -154,8 +154,25 @@ class _CurriculumScreenState extends State<CurriculumScreen> {
                   ...((preset['levels'] as List).map((l) => Padding(padding: const EdgeInsets.only(top: 6), child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text("${l['name']}: ${(l['classes'] as List).join(', ')}", style: textMedium),
-                      Text((l['subjects'] as List).join(' · '), style: textRegular.copyWith(fontSize: 12, color: Theme.of(context).hintColor)),
+                      if (l['grading'] != null)
+                        Text("${'grading_scale'.tr}: ${l['grading']}", style: textRegular.copyWith(fontSize: 12, color: primary)),
+                      // Senior School: core subjects and the electives of each pathway.
+                      if (l['pathways'] is Map)
+                        ...((l['pathways'] as Map).entries.map((e) => Padding(padding: const EdgeInsets.only(top: 4),
+                          child: Text.rich(TextSpan(children: [
+                            TextSpan(text: "${e.key}: ", style: textMedium.copyWith(fontSize: 12)),
+                            TextSpan(text: (e.value as List).join(' · '), style: textRegular.copyWith(fontSize: 12, color: Theme.of(context).hintColor)),
+                          ])))))
+                      else
+                        Text((l['subjects'] as List).join(' · '), style: textRegular.copyWith(fontSize: 12, color: Theme.of(context).hintColor)),
+                      if (l['optional'] is List && (l['optional'] as List).isNotEmpty)
+                        Text("${'optional'.tr}: ${(l['optional'] as List).join(' · ')}", style: textRegular.copyWith(fontSize: 12, color: Theme.of(context).hintColor)),
                     ])))),
+                  if (preset['competencies'] is List && (preset['competencies'] as List).isNotEmpty) ...[
+                    const SizedBox(height: Dimensions.paddingSizeSmall),
+                    Text("core_competencies".tr, style: textMedium),
+                    Wrap(spacing: 8, runSpacing: 8, children: (preset['competencies'] as List).map<Widget>((c) => Chip(label: Text("$c"))).toList()),
+                  ],
                   const SizedBox(height: Dimensions.paddingSizeSmall),
                   Text("grading_scale".tr, style: textMedium),
                   Wrap(spacing: 8, runSpacing: 8, children: (preset['grades'] as List).map<Widget>((g) => Chip(
