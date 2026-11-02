@@ -174,3 +174,26 @@ Fixes in this pass:
      flutter build appbundle --release --dart-define=API_BASE_URL=https://YOUR-API
      ```
 7. **Backups.** Nightly database dump plus `storage/app/public`. Monitor `storage/logs`.
+
+## Curriculum, audit and error handling (November 2026 pass)
+
+- **CBC set-up follows the KICD Basic Education Curriculum Framework data pack** (`Kenya_BECF_Curriculum_SMS_Data.xlsx`):
+  - PP1 – Grade 6 use the 4-level rubric (EE, ME, AE, BE); Grade 7 – 12 use the KNEC 8-level scale (EE1 – BE2).
+  - Senior School's 10 tracks become learner groups (STEM: Pure Sciences, Applied Sciences, Technical & Engineering, Career & Technology Studies; Social Sciences: Languages, Humanities, Business Studies; Arts & Sports: Performing, Visual & Applied, Sports Science). Each track's core subjects are Compulsory and its electives are Optional/Elective and linked to the track. The selection rules show on the curriculum screen.
+  - Optional subjects from the framework are added at Upper Primary and Junior School (Kenyan Sign Language, Foreign Language, Indigenous Languages, Computer Science). The 7 core competencies show on the curriculum screen.
+  - Lower levels keep the 2024 rationalised learning areas, which replaced the framework's 2017 lists. The framework's proposed A–E grading isn't used because KNEC grades on the rubric above.
+- **Other curricula:**
+  - 8-4-4 gets more electives.
+  - British adds Nursery and gives A-Level its own A*–E scale.
+  - TVET adds the Artisan level.
+- **Mixed schools:** applying a second curriculum re-grades only its own classes, so a school running CBC alongside the last 8-4-4 cohorts keeps both.
+- **Audit trail:** every successful change made through the API (create, update, delete, fee collection, payment) is written to `user_logs`, along with every sign-in and sign-out. Each entry records who, what, which record, the IP address and the URL. Request bodies are never stored. School admins see everyone's activity; other staff see their own.
+- **Errors:** API errors return `{status:false, message}` with the right status code (401, 403, 404, 405, 422, 429). Server errors show a short reference code and are logged in full; internal details only appear when debug is on. A non-numeric ID in an address returns 404 instead of 500.
+- **Fixed:**
+  - web links: `/dashboard`, `/sign-in` and bookmarks always opened the homepage;
+  - quick fee collection: failed for learners whose enrolment ID differed from their learner ID, and for admins working in another campus;
+  - learner name: showed "N/A";
+  - phone header: showed the branch number instead of its name;
+  - tablet dashboard: figure cards stretched into tall blocks;
+  - blog header: wrapped on phones.
+- **Tested:** all 297 API endpoints were called as every role, with no server errors. Learners were admitted, attendance marked, notices posted, books added and fees collected. Parents and learners were refused staff actions. Production was checked for each demo role, the audit trail and the JSON errors.
